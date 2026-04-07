@@ -87,14 +87,69 @@ run_cargo() {
   shift || true
 
   case "$subcmd" in
-    build|check|clippy|test)
+    test)
+      # cargo test has its own dedicated path that parses stable text output
+      # for test counts and failure names. The JSON format for tests requires
+      # nightly, so we stay on the stable text format and extract structured
+      # facts via grep + sed.
+      local stdout_file rc
+      stdout_file="$(mktemp -t gibber-cargo-test.XXXXXX)"
+      # Capture exit code without tripping `set -e` on test failures.
+      cargo test --color=never "$@" >"$stdout_file" 2>&1 && rc=0 || rc=$?
+
+      # Aggregate "test result: ok. N passed; N failed; N ignored" and the
+      # "test result: FAILED. ..." variant. cargo test prints one such line
+      # per test binary; we sum them across binaries.
+      local total_passed=0 total_failed=0 total_ignored=0
+      while IFS= read -r line; do
+        local p f i
+        p=$(printf '%s' "$line" | sed -nE 's/.* ([0-9]+) passed.*/\1/p')
+        f=$(printf '%s' "$line" | sed -nE 's/.*; ([0-9]+) failed.*/\1/p')
+        i=$(printf '%s' "$line" | sed -nE 's/.*; ([0-9]+) ignored.*/\1/p')
+        total_passed=$((total_passed + ${p:-0}))
+        total_failed=$((total_failed + ${f:-0}))
+        total_ignored=$((total_ignored + ${i:-0}))
+      done < <(grep -E '^test result:' "$stdout_file" || true)
+
+      # Capture failed test names (lines like "---- mod::test_name stdout ----"
+      # and "test mod::test_name ... FAILED").
+      local failures
+      failures="$(grep -E '^test .* FAILED$' "$stdout_file" | sed -E 's/^test (.+) \.\.\. FAILED$/\1/' || true)"
+
+      rm -f "$stdout_file"
+
+      # Outcome decision: prefer explicit test counts, fall back to exit code.
+      local outcome
+      if [ "$total_failed" -gt 0 ] || [ "$rc" -ne 0 ]; then
+        outcome="§failed"
+      else
+        outcome="§passed"
+      fi
+
+      # Emit the Gibber form
+      printf "(§result §tool:cargo §cmd:test §outcome:%s" "$outcome"
+
+      if [ -n "$failures" ]; then
+        printf "\n  §failures:["
+        while IFS= read -r name; do
+          [ -z "$name" ] && continue
+          printf "\n    (§test §name:\"%s\" §outcome:§failed)" "$name"
+        done <<< "$failures"
+        printf "\n  ]"
+      fi
+
+      printf "\n  §summary:(§passed-count %s §failed-count %s §ignored-count %s))\n" \
+        "$total_passed" "$total_failed" "$total_ignored"
+      ;;
+
+    build|check|clippy)
       # Use JSON diagnostic format. Capture stdout (JSON + interleaved plain
       # status lines like "Compiling..." / "Finished") to a tempfile and the
       # exit code separately, since cargo intermixes JSON with plain text.
       local stdout_file rc
       stdout_file="$(mktemp -t gibber-cargo.XXXXXX)"
-      cargo "$subcmd" --message-format=json-render-diagnostics --color=never "$@" >"$stdout_file" 2>&1
-      rc=$?
+      # Capture exit code without tripping `set -e` on build failures.
+      cargo "$subcmd" --message-format=json-render-diagnostics --color=never "$@" >"$stdout_file" 2>&1 && rc=0 || rc=$?
 
       # Filter to JSON lines only (lines starting with `{`)
       local json_lines

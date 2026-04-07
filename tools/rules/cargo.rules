@@ -1,75 +1,111 @@
 ; Cargo rule file (executable Gibber AST form)
-; Version: tools/v1
+; Version: tools/v2
 ; Read by gibber-run's rule interpreter, not by humans for documentation.
-; The corresponding English documentation lives at the bottom of this file
-; as a §notes field.
 
-(§tool-rule §tool:cargo §version:tools/v1
+(§tool-rule §tool:cargo §version:tools/v2
   §subcommands:[build check clippy test]
 
-  §invoke:(§cmd
-    §argv:[cargo §SUBCMD --message-format=json-render-diagnostics --color=never §ARGS]
-    §capture:§stdout-and-stderr
-    §record-exit-code:§yes)
+  §dispatch:[
 
-  §parse:(§format §ndjson-loose
-    ; ndjson-loose: parse only lines starting with `{` as JSON, drop the rest.
-    ; This is what cargo emits — JSON records intermixed with plain status text.
-    §filter:(§line-prefix "{"))
+    ;; ---- build / check / clippy ----
+    (§sub §subcmds:[build check clippy]
+      §invoke:(§cmd
+        §argv:[cargo §SUBCMD --message-format=json-render-diagnostics --color=never §ARGS]
+        §capture:§stdout-and-stderr
+        §record-exit-code:§yes)
 
-  §extract:[
-    (§extract §name:errors
-      §from:(§select §reason:compiler-message §level:error)
-      §fields:(§map
-        §code:(§path message code code)
-        §file:(§path message spans 0 file_name)
-        §line:(§path message spans 0 line_start)
-        §col:(§path message spans 0 column_start)
-        §msg:(§path message message)))
-    (§extract §name:warnings
-      §from:(§select §reason:compiler-message §level:warning)
-      §fields:(§map
-        §file:(§path message spans 0 file_name)
-        §line:(§path message spans 0 line_start)
-        §msg:(§path message message)))
-    (§extract §name:build-finished
-      §from:(§select §reason:build-finished)
-      §fields:(§map §success:(§path success))
-      §single:§yes)]
+      §parse:(§format §ndjson-loose
+        §filter:(§line-prefix "{"))
 
-  §outcome:(§decide
-    §rules:[
-      (§when (§and §field:build-finished.success §eq §true) §then §passed-or-warned)
-      (§when (§and §field:build-finished.success §eq §false) §then §failed)
-      (§when (§exit-code §eq 0) §then §passed-or-warned)
-      (§when §else §then §failed)]
-    §passed-or-warned:(§if (§count warnings §gt 0) §then §warned §else §passed))
+      §extract:[
+        (§extract §name:errors
+          §from:(§select §reason:compiler-message §level:error)
+          §fields:(§map
+            §code:(§path message code code)
+            §file:(§path message spans 0 file_name)
+            §line:(§path message spans 0 line_start)
+            §col:(§path message spans 0 column_start)
+            §msg:(§path message message)))
+        (§extract §name:warnings
+          §from:(§select §reason:compiler-message §level:warning)
+          §fields:(§map
+            §file:(§path message spans 0 file_name)
+            §line:(§path message spans 0 line_start)
+            §msg:(§path message message)))
+        (§extract §name:build-finished
+          §from:(§select §reason:build-finished)
+          §fields:(§map §success:(§path success))
+          §single:§yes)]
+
+      §outcome:(§decide
+        §rules:[
+          (§when (§and §field:build-finished.success §eq §true) §then §passed-or-warned)
+          (§when (§and §field:build-finished.success §eq §false) §then §failed)
+          (§when (§exit-code §eq 0) §then §passed-or-warned)
+          (§when §else §then §failed)]
+        §passed-or-warned:(§if (§count warnings §gt 0) §then §warned §else §passed))
+
+      §render:(§template
+        "(§result §tool:cargo §cmd:§SUBCMD §outcome:§OUTCOME"
+        (§if-keep errors (§block
+          "\n  §errors:["
+          (§for-each errors §as e
+            "\n    (§diagnostic §level:§error §code:§{e.code} §file:\"§{e.file}\" §line:§{e.line} §col:§{e.col} §message:\"§{e.msg|escape}\")")
+          "\n  ]"))
+        (§if-keep warnings (§block
+          "\n  §warnings:["
+          (§for-each warnings §as w
+            "\n    (§diagnostic §level:§warning §file:\"§{w.file}\" §line:§{w.line} §message:\"§{w.msg|escape}\")")
+          "\n  ]"))
+        "\n  §summary:(§errors-count §{count.errors} §warnings-count §{count.warnings}))"))
+
+    ;; ---- test ----
+    (§sub §subcmd:test
+      §invoke:(§cmd
+        §argv:[cargo test --color=never §ARGS]
+        §capture:§stdout-and-stderr
+        §record-exit-code:§yes)
+
+      §parse:(§format §lines
+        §line-rules:[
+          ;; Per-binary "test result" summary lines (one per test binary).
+          ;; Two variants: "test result: ok. ..." for success and
+          ;; "test result: FAILED. ..." for any failures.
+          (§line §match:"^test result:.* ([0-9]+) passed"
+            §emit:(§accumulate §passed §by:§1))
+          (§line §match:"^test result:.*; ([0-9]+) failed"
+            §emit:(§accumulate §failed §by:§1))
+          (§line §match:"^test result:.*; ([0-9]+) ignored"
+            §emit:(§accumulate §ignored §by:§1))
+          ;; Per-test failure markers (one per failed test).
+          (§line §match:"^test (.+) \\.\\.\\. FAILED$"
+            §emit:(§append failures (§record §name:§1 §outcome:§failed)))])
+
+      §outcome:(§decide
+        §rules:[
+          (§when (§or §field:failed §gt 0 §exit-code §ne 0) §then §failed)
+          (§when §else §then §passed)])
+
+      §render:(§template
+        "(§result §tool:cargo §cmd:test §outcome:§OUTCOME"
+        (§if §failures
+          "\n  §failures:["
+          (§for-each failures §as f
+            "\n    (§test §name:\"§{f.name}\" §outcome:§failed)")
+          "\n  ]")
+        "\n  §summary:(§passed-count §{passed} §failed-count §{failed} §ignored-count §{ignored}))"))]
 
   §profiles:[
     (§profile §name:default §inherit:errors)
-    (§profile §name:errors §keep:[errors] §drop:[warnings])
+    (§profile §name:errors §keep:[errors failures])
     (§profile §name:warnings §keep:[errors warnings])
-    (§profile §name:full §keep:[errors warnings])
+    (§profile §name:full §keep:[errors warnings failures])
     (§profile §name:summary §keep:[])]
 
   §default-profile:default
-
-  §render:(§template
-    "(§result §tool:cargo §cmd:§SUBCMD §outcome:§OUTCOME"
-    (§if-keep errors (§block
-      "\n  §errors:["
-      (§for-each errors §as e
-        "\n    (§diagnostic §level:§error §code:§{e.code} §file:\"§{e.file}\" §line:§{e.line} §col:§{e.col} §message:\"§{e.msg|escape}\")")
-      "\n  ]"))
-    (§if-keep warnings (§block
-      "\n  §warnings:["
-      (§for-each warnings §as w
-        "\n    (§diagnostic §level:§warning §file:\"§{w.file}\" §line:§{w.line} §message:\"§{w.msg|escape}\")")
-      "\n  ]"))
-    "\n  §summary:(§errors-count §{count.errors} §warnings-count §{count.warnings}))")
 
   ; No §render-english. Tool output is gibber-only — only the AI ever reads it.
   ; If a human asks the AI to summarize a tool result, the AI does the rendering
   ; on the spot using the per-node-type rules in GIBBER-RULES.md.
 
-  §notes:"Cargo emits JSON diagnostic records intermixed with plain text status lines (Compiling..., Finished...). The §parse §ndjson-loose strategy filters to lines starting with `{` before handing to the JSON parser. The §outcome §decide logic prefers the build-finished record's success field, falling back to the cargo exit code when no build-finished record is present (which happens for fully cached builds that compile nothing new).")
+  §notes:"For build/check/clippy, cargo emits JSON diagnostic records intermixed with plain text status lines (Compiling..., Finished...). The §ndjson-loose parser filters to lines starting with { before handing to the JSON parser. The §outcome §decide logic prefers the build-finished record's success field, falling back to cargo exit code for fully cached builds that emit no build-finished record. For test, cargo test does NOT have a stable JSON output mode (only nightly), so we parse the stable text output: 'test result: ok|FAILED. N passed; N failed; N ignored' lines are aggregated across binaries, and per-test FAILED lines populate the §failures list. The script must capture cargo test exit codes without tripping bash set -e since failing tests legitimately return non-zero.")
