@@ -1,6 +1,6 @@
 # Gibber Rules — Per-Node-Type Behavior
 
-Version: `rules/v3`
+Version: `rules/v4`
 Companion to: `GIBBER-SPEC.md` (grammar) and `GIBBER-DICTIONARY.md` (vocabulary).
 
 This file is the **behavior layer** of Gibber. It tells the runtime (an AI agent, the translator, the verifier, the renderer, the wire compressor) what to do with each kind of AST node it encounters. The grammar says what a tree looks like. The dictionary says what each symbol means. The rules say what to do with each tree.
@@ -277,6 +277,36 @@ Used inside `§task` to express time, latency, and accuracy budgets.
   Example: `Time: less than 2 days, p50 latency: less than 1 ms, p99: less than 3 ms, accuracy: 100%`
 
 ---
+
+---
+
+## Explanation and verification node types (added in `rules/v4`)
+
+These node types support the **task closeout flow**: every completed task carries an `§explanation` block with falsifiable claims, and an independent verifier produces a `§verification` form recording whether those claims hold.
+
+### `§explanation`
+- **validate** — Required: `§did`. Optional: `§claims`, `§deferred`, `§learned`.
+- **walk** — `§did`, `§claims`, `§deferred`, `§learned`.
+
+### `§claim`
+- **validate** — Required: at least one of `§exists`, `§contains`, `§matches`, `§passed`, `§equals`, `§absent` (the predicate). Optional: `§file`, `§cmd`, `§value`, `§pattern`, `§notes`.
+
+### `§verification`
+- **validate** — Required: `§task`, `§verified-by`, `§verified-at`, `§verdict`, `§claims-checked`, `§claims-passed`, `§claims-failed`. Optional: `§rejected-claims`, `§notes`.
+- **walk** — `§task`, `§verdict`, `§rejected-claims`.
+
+### Verifier flow
+
+1. The working agent finishes a task and writes a complete `§explanation` block as part of the completed-task entry in `tasks_completed.gibber`. The block must include a `§claims` list with at least one falsifiable claim.
+2. The working agent runs `~/.claude/shared/gibber/tools/gibber-verify <task-id>` which spawns a fresh `claude -p` invocation with no prior context.
+3. The verifier reads only the completed-task entry and the project's `CLAUDE.md`. It does not see the conversation that produced the task.
+4. The verifier checks each `§claim` mechanically against the filesystem and any commands it can re-run.
+5. The verifier emits a single `§verification` form to a known output path.
+6. The working agent reads the `§verification` form and either:
+   - On `§verdict:§verified`: leaves the task as `§done` and proceeds.
+   - On `§verdict:§rejected`: changes the task status to `§verifying-failed`, fixes the rejected claims, regenerates the `§explanation`, and re-runs `gibber-verify`.
+
+The working agent never marks a task fully complete without a passing `§verification` from a fresh agent. This is the standard task closeout flow.
 
 ---
 

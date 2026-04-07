@@ -1,0 +1,67 @@
+---
+id: VERIFIER-PROMPT
+gibber_dict: meta/v2
+---
+
+(§verifier-task §version:gibber/4
+  §role:(§independent §verifier §agent)
+  §discipline:(§check §every §claim §do-not §trust §working-agent)
+
+  §step1:(§learn §gibber
+    §read:~/.claude/shared/gibber/GIBBER-VERSION
+    §if-known:§skip
+    §if-unknown:[
+      §read:~/.claude/shared/gibber/GIBBER-SPEC.md
+      §read:~/.claude/shared/gibber/GIBBER-DICTIONARY.md
+      §read:~/.claude/shared/gibber/GIBBER-RULES.md])
+
+  §step2:(§read §file:__PROJECT_ROOT__/CLAUDE.md
+    §note §any §extension §dictionary §referenced
+    §load §it)
+
+  §step3:(§read §file:__PROJECT_ROOT__/tasks/tasks_completed.gibber
+    §find §task §with §id:__TASK_ID__
+    §if-not-found:(§emit-and-stop
+      (§verification §task:__TASK_ID__ §verdict:§rejected
+        §claims-checked:0 §claims-passed:0 §claims-failed:1
+        §rejected-claims:[
+          (§claim §absent §evidence:"task __TASK_ID__ not in tasks_completed.gibber")])))
+
+  §step4:(§walk §explanation §claims
+    §for-each §claim §check §predicate)
+
+  §predicates:[
+    (§check §exists §file:<path>
+      §how:(§use §read §or §glob §against __PROJECT_ROOT__/<path>))
+    (§check §contains §file:<path> §value:<text>
+      §how:(§read §file §grep §for §value))
+    (§check §matches §file:<path> §pattern:<regex>
+      §how:(§grep §regex))
+    (§check §passed §cmd:<command>
+      §how:(§bash §run §command §exit-code §must-be 0))
+    (§check §equals §value:<a> §expected:<b>
+      §how:(§literal §string-compare))
+    (§check §absent §file:<path>
+      §how:(§check §file §does-not-exist))]
+
+  §unknown-predicate:(§record §as §rejected §evidence:"unknown predicate")
+
+  §step5:(§emit-verification
+    §to-file:__OUTPUT_FILE__
+    §shape:(§verification §task:__TASK_ID__
+      §verified-by:claude-p-verifier
+      §verified-at:<iso-timestamp-now>
+      §verdict:<§verified §or §rejected>
+      §claims-checked:<n>
+      §claims-passed:<n>
+      §claims-failed:<n>
+      §rejected-claims:[<claim-with-evidence> §...]
+      §notes:<short §summary>))
+
+  §rules:[
+    (§rule §verdict:§verified §iff §every-claim §passed)
+    (§rule §verdict:§rejected §iff §any-claim §failed)
+    (§rule §rejected-claims §include §evidence §per §claim)
+    (§rule §omit §rejected-claims §field §when §empty)
+    (§rule §gibber-only §no §english-prose §in §output-form)
+    (§rule §after-write §print:"verification written" §do-not §print §form §to §chat)])

@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# gibber-verify — spawn an independent claude -p verifier to check a completed
+# task's §explanation §claims against the filesystem and test results.
+#
+# Usage:
+#   gibber-verify <task-id> [project-root]
+#
+# Behavior:
+#   1. Reads the canonical verifier prompt from verifier-prompt.gibber.
+#   2. Substitutes __TASK_ID__, __PROJECT_ROOT__, __OUTPUT_FILE__ placeholders.
+#   3. Pipes the resulting prompt to a fresh claude -p invocation via stdin
+#      (no shell-quoting traps from passing it as an argument).
+#   4. claude -p runs with --permission-mode bypassPermissions so the verifier
+#      can read project files, run cargo/git commands, and write its single
+#      output file under /tmp without permission prompts.
+#   5. Waits for the verifier to finish, then prints the verification form.
+#
+# The verifier prompt is itself a .gibber file (verifier-prompt.gibber). The
+# verifier and the working agent both speak gibber, so the instruction set is
+# in gibber too. No English layer in the middle.
+
+set -euo pipefail
+
+TASK_ID="${1:-}"
+PROJECT_ROOT="${2:-$(pwd)}"
+TIMEOUT="${GIBBER_VERIFY_TIMEOUT:-180}"
+
+if [ -z "$TASK_ID" ]; then
+  echo "usage: gibber-verify <task-id> [project-root]" >&2
+  exit 2
+fi
+
+if [ ! -d "$PROJECT_ROOT" ]; then
+  echo "gibber-verify: project root not found: $PROJECT_ROOT" >&2
+  exit 1
+fi
+
+COMPLETED_FILE="$PROJECT_ROOT/tasks/tasks_completed.gibber"
+if [ ! -f "$COMPLETED_FILE" ]; then
+  echo "gibber-verify: tasks/tasks_completed.gibber not found in $PROJECT_ROOT" >&2
+  exit 1
+fi
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROMPT_TEMPLATE="$SCRIPT_DIR/verifier-prompt.gibber"
+if [ ! -f "$PROMPT_TEMPLATE" ]; then
+  echo "gibber-verify: verifier prompt template not found: $PROMPT_TEMPLATE" >&2
+  exit 1
+fi
+
+# Output paths (use a stable id so concurrent verifications do not collide)
+SAFE_ID="$(echo "$TASK_ID" | tr -c 'A-Za-z0-9' '_')"
+OUTPUT_FILE="/tmp/gibber-verify-${SAFE_ID}.gibber"
+RAW_LOG="/tmp/gibber-verify-${SAFE_ID}.log"
+PROMPT_FILE="/tmp/gibber-verify-${SAFE_ID}.prompt"
+
+rm -f "$OUTPUT_FILE" "$RAW_LOG" "$PROMPT_FILE"
+
+# Substitute placeholders into the prompt template
+sed \
+  -e "s|__TASK_ID__|${TASK_ID}|g" \
+  -e "s|__PROJECT_ROOT__|${PROJECT_ROOT}|g" \
+  -e "s|__OUTPUT_FILE__|${OUTPUT_FILE}|g" \
+  "$PROMPT_TEMPLATE" > "$PROMPT_FILE"
+
+echo "gibber-verify: running fresh verifier for task ${TASK_ID} (timeout ${TIMEOUT}s)..."
+echo "gibber-verify: prompt at ${PROMPT_FILE}"
+echo "gibber-verify: output will be at ${OUTPUT_FILE}"
+
+# Run claude -p with the prompt fed via stdin. Stdin avoids every shell
+# quoting trap that comes with passing a multi-line, special-character-rich
+# prompt as a positional argument.
+cd "${PROJECT_ROOT}"
+claude -p --permission-mode bypassPermissions --add-dir /tmp < "$PROMPT_FILE" > "$RAW_LOG" 2>&1 &
+VERIFIER_PID=$!
+
+# Poll for completion with timeout
+ELAPSED=0
+INTERVAL=3
+while [ "$ELAPSED" -lt "$TIMEOUT" ]; do
+  if ! kill -0 "$VERIFIER_PID" 2>/dev/null; then
+    break
+  fi
+  sleep "$INTERVAL"
+  ELAPSED=$((ELAPSED + INTERVAL))
+done
+
+if kill -0 "$VERIFIER_PID" 2>/dev/null; then
+  echo "gibber-verify: TIMEOUT after ${TIMEOUT}s, killing verifier pid=${VERIFIER_PID}" >&2
+  kill "$VERIFIER_PID" 2>/dev/null || true
+  echo "gibber-verify: raw log:" >&2
+  tail -40 "$RAW_LOG" >&2
+  exit 3
+fi
+
+# Verifier exited. Check for the output file.
+if [ ! -f "$OUTPUT_FILE" ]; then
+  echo "gibber-verify: verifier finished but did not produce ${OUTPUT_FILE}" >&2
+  echo "gibber-verify: raw log:" >&2
+  tail -40 "$RAW_LOG" >&2
+  exit 4
+fi
+
+# Print the verification form
+cat "$OUTPUT_FILE"
