@@ -1,0 +1,93 @@
+; Git rule file (executable Gibber AST form)
+; Version: tools/v1
+
+(§tool-rule §tool:git §version:tools/v1
+  §subcommands:[status log branch remote diff]
+
+  ; Git has multiple subcommands with different output shapes, so we use a
+  ; per-subcommand dispatch rather than one universal rule.
+
+  §dispatch:[
+    ;; ---- git status ----
+    (§sub §subcmd:status
+      §invoke:(§cmd §argv:[git -c color.ui=never status --porcelain=v2 --branch §ARGS])
+      §parse:(§format §lines
+        §line-rules:[
+          (§line §match:"^# branch.head (.+)$"     §emit:(§field §branch §1))
+          (§line §match:"^# branch.upstream (.+)$" §emit:(§field §head §1))
+          (§line §match:"^# branch.ab \\+([0-9]+) -([0-9]+)$"
+            §emit:(§block (§field §ahead §1) (§field §behind §2)))
+          (§line §match:"^1 ([^ ]+) "
+            §emit:(§classify §xy:§1
+              §staged:(§when §xy[0] §ne ".") §into:staged §value:§last-token)
+              §unstaged:(§when §xy[1] §ne ".") §into:unstaged §value:§last-token))
+          (§line §match:"^\\? (.+)$"  §emit:(§append untracked §1))
+          (§line §match:"^u .+ (.+)$" §emit:(§append conflicted §1))])
+      §render:(§template
+        "(§result §tool:git §cmd:status"
+        (§if §branch     "\n  §branch:§{branch}")
+        (§if §head       "\n  §head:§{head}")
+        "\n  §ahead:§{ahead|default 0} §behind:§{behind|default 0}"
+        (§if §staged     "\n  §staged:[§{staged|join space}]")
+        (§if §unstaged   "\n  §unstaged:[§{unstaged|join space}]")
+        (§if §untracked  "\n  §untracked:[§{untracked|join space}]")
+        (§if §conflicted "\n  §conflicted:[§{conflicted|join space}]")
+        "\n  §summary:(§total-changes §{count.changes}))"))
+
+    ;; ---- git log ----
+    (§sub §subcmd:log
+      §invoke:(§cmd §argv:[git -c color.ui=never log --pretty=format:%h%x00%an%x00%s §ARGS])
+      §parse:(§format §lines
+        §line-rules:[
+          (§line §match:"^([^\\x00]+)\\x00([^\\x00]+)\\x00(.*)$"
+            §emit:(§append commits (§record §sha:§1 §author:§2 §subject:§3)))])
+      §render:(§template
+        "(§result §tool:git §cmd:log\n  §commits:["
+        (§for-each commits §as c
+          "\n    (§commit §sha:§{c.sha} §author:\"§{c.author}\" §subject:\"§{c.subject|escape}\")")
+        "\n  ])"))
+
+    ;; ---- git branch ----
+    (§sub §subcmd:branch
+      §invoke:(§cmd §argv:[git -c color.ui=never branch --list --no-color §ARGS])
+      §parse:(§format §lines
+        §line-rules:[
+          (§line §match:"^\\* (.+)$" §emit:(§block (§field §current §1) (§append branches §1)))
+          (§line §match:"^  (.+)$"   §emit:(§append branches §1))])
+      §render:(§template
+        "(§result §tool:git §cmd:branch §current:§{current} §branches:[§{branches|join space}])"))
+
+    ;; ---- git remote ----
+    (§sub §subcmd:remote
+      §invoke:(§cmd §argv:[git -c color.ui=never remote -v §ARGS])
+      §parse:(§format §lines
+        §line-rules:[
+          (§line §match:"^(\\S+)\\s+(\\S+) \\(fetch\\)$"
+            §emit:(§append remotes (§record §name:§1 §url:§2)))])
+      §render:(§template
+        "(§result §tool:git §cmd:remote §remotes:["
+        (§for-each remotes §as r
+          "\n  (§remote §name:§{r.name} §url:§{r.url})")
+        "\n])"))
+
+    ;; ---- git diff ----
+    (§sub §subcmd:diff
+      §profiles:[
+        (§profile §name:default
+          §invoke:(§cmd §argv:[git -c color.ui=never diff --numstat §ARGS])
+          §parse:(§format §lines
+            §line-rules:[
+              (§line §match:"^([0-9-]+)\\t([0-9-]+)\\t(.+)$"
+                §emit:(§append files (§record §added:§1 §removed:§2 §file:§3)))])
+          §render:(§template
+            "(§result §tool:git §cmd:diff §files:["
+            (§for-each files §as f
+              "\n  (§file-entry §file:\"§{f.file}\" §added:§{f.added} §removed:§{f.removed})")
+            "\n  ] §summary:(§total §added §{sum.added} §removed §{sum.removed}))"))
+        (§profile §name:full
+          §invoke:(§cmd §argv:[git -c color.ui=never diff §ARGS])
+          §parse:(§format §raw)
+          §render:(§template "§{raw|strip-ansi}"))]
+      §default-profile:default)]
+
+  §notes:"git output is line-oriented and stable. We use porcelain=v2 for status (the most reliable machine format) and explicit --pretty=format with NUL separators for log to safely handle subjects containing commas, tabs, or quotes. ANSI is disabled at invocation via -c color.ui=never.")

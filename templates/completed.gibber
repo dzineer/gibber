@@ -1,0 +1,12 @@
+---
+id: COMPLETED
+gibber_dict: meta/v1
+---
+
+(§completed §id:COMPLETED
+  §updated:<iso-date>
+  §tasks:[
+    ; (§task §id:TXXX §status:§done §completed:<iso-date>
+    ;   §title:"<title>"
+    ;   §result:(§passed §<short result>))
+    ])

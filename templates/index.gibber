@@ -1,0 +1,14 @@
+---
+id: INDEX
+gibber_dict: meta/v1
+---
+
+(§index §id:INDEX
+  §updated:<iso-date>
+  §next:TXXX
+  §active:[TXXX TYYY]
+  §completed:[]
+  §later:[TZZZ]
+  §phases:[
+    (§phase §id:P0 §title:"foundations" §tasks:[TXXX TYYY])
+    (§phase §id:P1 §title:"<phase name>" §tasks:[TZZZ])])

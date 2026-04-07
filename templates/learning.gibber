@@ -1,0 +1,15 @@
+---
+id: LEARNING
+gibber_dict: meta/v1
+---
+
+(§learning §id:LEARNING
+  §updated:<iso-date>
+  §entries:[
+    ; (§learning §id:LXXX
+    ;   §created:<iso-timestamp>
+    ;   §context:(§<short context>)
+    ;   §tried:[§<attempt1> §<attempt2>]
+    ;   §result-fix:§not-fixed
+    ;   §lesson:(§<short lesson>))
+    ])

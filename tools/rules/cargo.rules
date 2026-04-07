@@ -1,0 +1,75 @@
+; Cargo rule file (executable Gibber AST form)
+; Version: tools/v1
+; Read by gibber-run's rule interpreter, not by humans for documentation.
+; The corresponding English documentation lives at the bottom of this file
+; as a §notes field.
+
+(§tool-rule §tool:cargo §version:tools/v1
+  §subcommands:[build check clippy test]
+
+  §invoke:(§cmd
+    §argv:[cargo §SUBCMD --message-format=json-render-diagnostics --color=never §ARGS]
+    §capture:§stdout-and-stderr
+    §record-exit-code:§yes)
+
+  §parse:(§format §ndjson-loose
+    ; ndjson-loose: parse only lines starting with `{` as JSON, drop the rest.
+    ; This is what cargo emits — JSON records intermixed with plain status text.
+    §filter:(§line-prefix "{"))
+
+  §extract:[
+    (§extract §name:errors
+      §from:(§select §reason:compiler-message §level:error)
+      §fields:(§map
+        §code:(§path message code code)
+        §file:(§path message spans 0 file_name)
+        §line:(§path message spans 0 line_start)
+        §col:(§path message spans 0 column_start)
+        §msg:(§path message message)))
+    (§extract §name:warnings
+      §from:(§select §reason:compiler-message §level:warning)
+      §fields:(§map
+        §file:(§path message spans 0 file_name)
+        §line:(§path message spans 0 line_start)
+        §msg:(§path message message)))
+    (§extract §name:build-finished
+      §from:(§select §reason:build-finished)
+      §fields:(§map §success:(§path success))
+      §single:§yes)]
+
+  §outcome:(§decide
+    §rules:[
+      (§when (§and §field:build-finished.success §eq §true) §then §passed-or-warned)
+      (§when (§and §field:build-finished.success §eq §false) §then §failed)
+      (§when (§exit-code §eq 0) §then §passed-or-warned)
+      (§when §else §then §failed)]
+    §passed-or-warned:(§if (§count warnings §gt 0) §then §warned §else §passed))
+
+  §profiles:[
+    (§profile §name:default §inherit:errors)
+    (§profile §name:errors §keep:[errors] §drop:[warnings])
+    (§profile §name:warnings §keep:[errors warnings])
+    (§profile §name:full §keep:[errors warnings])
+    (§profile §name:summary §keep:[])]
+
+  §default-profile:default
+
+  §render:(§template
+    "(§result §tool:cargo §cmd:§SUBCMD §outcome:§OUTCOME"
+    (§if-keep errors (§block
+      "\n  §errors:["
+      (§for-each errors §as e
+        "\n    (§diagnostic §level:§error §code:§{e.code} §file:\"§{e.file}\" §line:§{e.line} §col:§{e.col} §message:\"§{e.msg|escape}\")")
+      "\n  ]"))
+    (§if-keep warnings (§block
+      "\n  §warnings:["
+      (§for-each warnings §as w
+        "\n    (§diagnostic §level:§warning §file:\"§{w.file}\" §line:§{w.line} §message:\"§{w.msg|escape}\")")
+      "\n  ]"))
+    "\n  §summary:(§errors-count §{count.errors} §warnings-count §{count.warnings}))")
+
+  ; No §render-english. Tool output is gibber-only — only the AI ever reads it.
+  ; If a human asks the AI to summarize a tool result, the AI does the rendering
+  ; on the spot using the per-node-type rules in GIBBER-RULES.md.
+
+  §notes:"Cargo emits JSON diagnostic records intermixed with plain text status lines (Compiling..., Finished...). The §parse §ndjson-loose strategy filters to lines starting with `{` before handing to the JSON parser. The §outcome §decide logic prefers the build-finished record's success field, falling back to the cargo exit code when no build-finished record is present (which happens for fully cached builds that compile nothing new).")

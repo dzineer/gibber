@@ -1,0 +1,16 @@
+---
+id: TXXX
+gibber_dict: meta/v1
+---
+
+(§task §id:TXXX
+  §title:"<short title>"
+  §status:§queued
+  §owner:§ai
+  §depends:[]
+  §goal:(§<verb> §<component> §with:[§<aspect1> §<aspect2>])
+  §files:[<paths>]
+  §done:[]
+  §todo:[§<step1> §<step2>]
+  §budget:(§time<Xd §lat<Xms §p99<Xms §acc=100%)
+  §tests:[§test-unit §test-int])

@@ -1,0 +1,8 @@
+# Gibber's own derivative views (any .human files generated during dogfooding)
+*.human
+
+# Editor noise
+.DS_Store
+*.swp
+.idea/
+.vscode/

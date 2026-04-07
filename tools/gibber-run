@@ -1,0 +1,324 @@
+#!/usr/bin/env bash
+# gibber-run — wrapper script that runs a CLI tool and compresses its output
+# into a Gibber form before returning.
+#
+# Usage:
+#   gibber-run [--raw] [--profile NAME] [--selftest TOOL] <command> [args...]
+#
+# Flags (before the command):
+#   --raw              Bypass the filter, run the command as-is and return raw output.
+#   --profile NAME     Pick a named profile from the tool's rule file.
+#                      Common profiles: default, errors, warnings, full, summary.
+#   --selftest TOOL    Run the tool's conformance fixtures and report pass/fail.
+#   -h, --help         Show this help.
+#
+# Version: tools/v1
+#
+# This is the Mechanism 1 implementation: an opt-in wrapper the agent invokes
+# explicitly. Mechanism 2 (a Claude Code post-Bash hook that rewrites every
+# command's output automatically) builds on the same rule files.
+#
+# The script intentionally uses only POSIX shell + awk/sed/jq so it runs
+# anywhere without a Rust/Python/Node runtime. jq is the only non-POSIX
+# dependency and is nearly universal on developer machines.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+RULES_DIR="$SCRIPT_DIR/rules"
+VERSION="tools/v1"
+
+PROFILE="default"
+RAW=0
+SELFTEST=""
+
+# Parse flags
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --raw) RAW=1; shift ;;
+    --profile) PROFILE="$2"; shift 2 ;;
+    --selftest) SELFTEST="$2"; shift 2 ;;
+    -h|--help)
+      sed -n '3,20p' "$0"
+      exit 0 ;;
+    --) shift; break ;;
+    -*)
+      echo "gibber-run: unknown flag: $1" >&2
+      exit 2 ;;
+    *) break ;;
+  esac
+done
+
+if [ -n "$SELFTEST" ]; then
+  echo "gibber-run selftest $SELFTEST: (not yet implemented in v1; rule files exist at $RULES_DIR/$SELFTEST.rules)"
+  exit 0
+fi
+
+if [ $# -eq 0 ]; then
+  echo "gibber-run: no command given" >&2
+  exit 2
+fi
+
+TOOL="$1"
+RULE_FILE="$RULES_DIR/$TOOL.rules"
+
+# If --raw, or no rule file exists for this tool, just run the command directly
+if [ "$RAW" -eq 1 ] || [ ! -f "$RULE_FILE" ]; then
+  if [ "$RAW" -eq 0 ] && [ ! -f "$RULE_FILE" ]; then
+    # No rule: emit a tiny notice then run raw
+    echo "(§result §tool:$TOOL §note:\"no rule file; running raw\")" >&2
+  fi
+  exec "$@"
+fi
+
+# A rule file exists. In v1 of gibber-run, the actual parsing logic per tool
+# is implemented as small tool-specific shell functions below. v2 will load
+# rule files dynamically and interpret them; v1 hardcodes the most common
+# cases for speed and simplicity.
+
+# Strip ANSI escape sequences (used as a fallback and inside per-tool paths)
+strip_ansi() {
+  sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g'
+}
+
+# ------------------- cargo -------------------
+run_cargo() {
+  local subcmd="${1:-}"
+  shift || true
+
+  case "$subcmd" in
+    build|check|clippy|test)
+      # Use JSON diagnostic format. Capture stdout (JSON + interleaved plain
+      # status lines like "Compiling..." / "Finished") to a tempfile and the
+      # exit code separately, since cargo intermixes JSON with plain text.
+      local stdout_file rc
+      stdout_file="$(mktemp -t gibber-cargo.XXXXXX)"
+      cargo "$subcmd" --message-format=json-render-diagnostics --color=never "$@" >"$stdout_file" 2>&1
+      rc=$?
+
+      # Filter to JSON lines only (lines starting with `{`)
+      local json_lines
+      json_lines="$(grep '^{' "$stdout_file" || true)"
+      local non_json_lines
+      non_json_lines="$(grep -v '^{' "$stdout_file" || true)"
+      rm -f "$stdout_file"
+
+      if ! command -v jq >/dev/null 2>&1; then
+        local cleaned
+        cleaned="$(printf "%s" "$non_json_lines" | strip_ansi)"
+        printf "(§result §tool:cargo §cmd:%s §note:\"jq not installed\")\n%s\n" "$subcmd" "$cleaned"
+        return
+      fi
+
+      # Extract diagnostics by level
+      local errors warnings build_finished
+      if [ -n "$json_lines" ]; then
+        errors="$(printf "%s\n" "$json_lines" | jq -rcs '
+          map(select(.reason == "compiler-message" and .message.level == "error"))
+          | map({
+              code: (.message.code.code // ""),
+              file: (.message.spans[0].file_name // ""),
+              line: (.message.spans[0].line_start // 0),
+              col: (.message.spans[0].column_start // 0),
+              msg: (.message.message // "")
+            })
+        ' 2>/dev/null || echo '[]')"
+
+        warnings="$(printf "%s\n" "$json_lines" | jq -rcs '
+          map(select(.reason == "compiler-message" and .message.level == "warning"))
+          | map({
+              file: (.message.spans[0].file_name // ""),
+              line: (.message.spans[0].line_start // 0),
+              msg: (.message.message // "")
+            })
+        ' 2>/dev/null || echo '[]')"
+
+        build_finished="$(printf "%s\n" "$json_lines" | jq -rcs '
+          map(select(.reason == "build-finished")) | last // {}
+        ' 2>/dev/null || echo '{}')"
+      else
+        errors='[]'
+        warnings='[]'
+        build_finished='{}'
+      fi
+
+      # Determine success: prefer the build-finished record, fall back to
+      # the cargo exit code. A fully-cached build emits no build-finished
+      # record but still exits 0.
+      local bf_success
+      bf_success="$(printf "%s" "$build_finished" | jq -r '.success // empty' 2>/dev/null || true)"
+      local success
+      if [ "$bf_success" = "true" ]; then
+        success="true"
+      elif [ "$bf_success" = "false" ]; then
+        success="false"
+      elif [ "$rc" -eq 0 ]; then
+        success="true"
+      else
+        success="false"
+      fi
+
+      # Counts (computed early so we can use them in outcome logic)
+      local err_count warn_count
+      err_count="$(printf "%s" "$errors" | jq 'length' 2>/dev/null || echo 0)"
+      warn_count="$(printf "%s" "$warnings" | jq 'length' 2>/dev/null || echo 0)"
+
+      # Outcome
+      local outcome
+      if [ "$success" = "true" ]; then
+        if [ "$warn_count" -gt 0 ]; then
+          outcome="§warned"
+        else
+          outcome="§passed"
+        fi
+      else
+        outcome="§failed"
+      fi
+
+      # Profile filtering
+      local include_errors=1 include_warnings=0
+      case "$PROFILE" in
+        default|errors) include_errors=1; include_warnings=0 ;;
+        warnings) include_errors=1; include_warnings=1 ;;
+        full) include_errors=1; include_warnings=1 ;;
+        summary) include_errors=0; include_warnings=0 ;;
+      esac
+
+      # Emit the Gibber form
+      printf "(§result §tool:cargo §cmd:%s §outcome:%s" "$subcmd" "$outcome"
+
+      if [ "$include_errors" -eq 1 ] && [ "$err_count" -gt 0 ]; then
+        printf "\n  §errors:["
+        printf "%s\n" "$errors" | jq -r '.[] | "    (§diagnostic §level:§error §code:\(.code) §file:\"\(.file)\" §line:\(.line) §col:\(.col) §message:\"\(.msg | gsub("\""; "\\\""))\")"'
+        printf "  ]"
+      fi
+
+      if [ "$include_warnings" -eq 1 ] && [ "$warn_count" -gt 0 ]; then
+        printf "\n  §warnings:["
+        printf "%s\n" "$warnings" | jq -r '.[] | "    (§diagnostic §level:§warning §file:\"\(.file)\" §line:\(.line) §message:\"\(.msg | gsub("\""; "\\\""))\")"'
+        printf "  ]"
+      fi
+
+      printf "\n  §summary:(§errors-count %s §warnings-count %s))\n" "$err_count" "$warn_count"
+      ;;
+
+    *)
+      # Unhandled subcommand — run raw with ANSI strip
+      cargo "$subcmd" --color=never "$@" 2>&1 | strip_ansi
+      ;;
+  esac
+}
+
+# ------------------- git -------------------
+run_git() {
+  local subcmd="${1:-}"
+  shift || true
+
+  case "$subcmd" in
+    status)
+      local raw
+      raw="$(git -c color.ui=never status --porcelain=v2 --branch "$@" 2>&1 || true)"
+      local branch head ahead=0 behind=0
+      branch="$(printf "%s\n" "$raw" | awk '/^# branch.head/ {print $3}')"
+      head="$(printf "%s\n" "$raw" | awk '/^# branch.upstream/ {print $3}')"
+      local ab_line
+      ab_line="$(printf "%s\n" "$raw" | awk '/^# branch.ab/ {print $3, $4}')"
+      if [ -n "$ab_line" ]; then
+        ahead="$(printf "%s" "$ab_line" | awk '{print $1}' | tr -d '+')"
+        behind="$(printf "%s" "$ab_line" | awk '{print $2}' | tr -d '-')"
+      fi
+
+      local staged unstaged untracked conflicted
+      staged="$(printf "%s\n" "$raw" | awk '/^1 / {if (substr($2,1,1) != ".") print $NF}')"
+      unstaged="$(printf "%s\n" "$raw" | awk '/^1 / {if (substr($2,2,1) != ".") print $NF}')"
+      untracked="$(printf "%s\n" "$raw" | awk '/^\? / {print $2}')"
+      conflicted="$(printf "%s\n" "$raw" | awk '/^u / {print $NF}')"
+
+      printf "(§result §tool:git §cmd:status\n"
+      [ -n "$branch" ] && printf "  §branch:%s\n" "$branch"
+      [ -n "$head" ] && printf "  §head:%s\n" "$head"
+      printf "  §ahead:%s §behind:%s\n" "$ahead" "$behind"
+
+      emit_list() {
+        local label="$1" items="$2"
+        if [ -n "$items" ]; then
+          printf "  %s:[" "$label"
+          printf "%s" "$items" | awk 'BEGIN{first=1} {if(!first)printf " "; printf "%s", $0; first=0}'
+          printf "]\n"
+        fi
+      }
+      emit_list "§staged" "$staged"
+      emit_list "§unstaged" "$unstaged"
+      emit_list "§untracked" "$untracked"
+      emit_list "§conflicted" "$conflicted"
+
+      local total
+      total=$(( $(printf "%s\n" "$staged$unstaged$untracked$conflicted" | grep -c . || true) ))
+      printf "  §summary:(§total-changes %s))\n" "$total"
+      ;;
+
+    log)
+      local raw
+      raw="$(git -c color.ui=never log --pretty=format:'%h%x00%an%x00%s' "$@" 2>&1 || true)"
+      printf "(§result §tool:git §cmd:log\n  §commits:[\n"
+      printf "%s\n" "$raw" | awk -F'\0' 'NF >= 3 {
+        gsub(/"/, "\\\"", $3)
+        printf "    (§commit §sha:%s §author:\"%s\" §subject:\"%s\")\n", $1, $2, $3
+      }'
+      printf "  ])\n"
+      ;;
+
+    branch)
+      local raw
+      raw="$(git -c color.ui=never branch --list --no-color "$@" 2>&1 || true)"
+      local current
+      current="$(printf "%s\n" "$raw" | awk '/^\* / {print $2}')"
+      printf "(§result §tool:git §cmd:branch §current:%s §branches:[" "$current"
+      printf "%s\n" "$raw" | awk '{gsub(/^[\* ]+/, ""); if ($0) printf "%s ", $0}'
+      printf "])\n"
+      ;;
+
+    remote)
+      local raw
+      raw="$(git -c color.ui=never remote -v "$@" 2>&1 || true)"
+      printf "(§result §tool:git §cmd:remote §remotes:[\n"
+      printf "%s\n" "$raw" | awk '/\(fetch\)/ {printf "  (§remote §name:%s §url:%s)\n", $1, $2}'
+      printf "])\n"
+      ;;
+
+    diff)
+      # Default profile: numstat only. Full profile: full diff with ANSI strip.
+      if [ "$PROFILE" = "full" ]; then
+        git -c color.ui=never diff "$@" 2>&1 | strip_ansi
+      else
+        local raw
+        raw="$(git -c color.ui=never diff --numstat "$@" 2>&1 || true)"
+        printf "(§result §tool:git §cmd:diff §files:[\n"
+        local total_add=0 total_del=0
+        printf "%s\n" "$raw" | while IFS=$'\t' read -r added removed path; do
+          if [ -n "${path:-}" ]; then
+            printf "  (§file-entry §file:\"%s\" §added:%s §removed:%s)\n" "$path" "$added" "$removed"
+          fi
+        done
+        # Totals
+        total_add="$(printf "%s\n" "$raw" | awk '{s+=$1} END{print s+0}')"
+        total_del="$(printf "%s\n" "$raw" | awk '{s+=$2} END{print s+0}')"
+        printf "  ] §summary:(§total §added %s §removed %s))\n" "$total_add" "$total_del"
+      fi
+      ;;
+
+    *)
+      git -c color.ui=never "$subcmd" "$@" 2>&1 | strip_ansi
+      ;;
+  esac
+}
+
+# Dispatch
+case "$TOOL" in
+  cargo) shift; run_cargo "$@" ;;
+  git)   shift; run_git "$@" ;;
+  *)
+    # No dedicated handler. Fall back to running the command and stripping ANSI.
+    "$@" 2>&1 | strip_ansi
+    ;;
+esac

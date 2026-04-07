@@ -1,0 +1,12 @@
+---
+id: MEMORY
+gibber_dict: meta/v1
+---
+
+(§memory §id:MEMORY
+  §updated:<iso-date>
+  §entries:[
+    ; (§memory §id:M001
+    ;   §title:"<short title>"
+    ;   §content:(§<content as a gibber form or list>))
+    ])

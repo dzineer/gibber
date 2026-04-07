@@ -1,0 +1,15 @@
+---
+id: SESSION
+gibber_dict: meta/v1
+---
+
+(§session §id:SESSION
+  §updated:<iso-date>
+  §entries:[
+    ; (§session §id:SXXX
+    ;   §created:<iso-timestamp>
+    ;   §prompt:(§<short prompt summary>)
+    ;   §response:(§<short response summary>)
+    ;   §decisions:[§<decision1> §<decision2>]
+    ;   §artifacts:[<files written>])
+    ])
