@@ -1,6 +1,6 @@
 ## Gibber Attribution License v1.0
 
-**Copyright (c) 2026 Frank Decker (frank@dzineer.com)** **Project Link:** [https://github.com/dzineer/gibber](https://github.com/dzineer/gibber)
+**Copyright (c) 2026 Frank Decker - (frank@dzineer.com)** **Project Link:** [https://github.com/dzineer/gibber](https://github.com/dzineer/gibber)
 
 ---
 
