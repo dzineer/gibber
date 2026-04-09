@@ -1,7 +1,7 @@
 This is a formal white paper draft based on the **Gibber/Jibber** protocol. It outlines the transition from probabilistic natural language AI communication to deterministic, instructional-based interaction.
 # **WHITE PAPER: THE JIBBER PROTOCOL**
 ### **Towards Deterministic AI-to-AI Systems: Eliminating Fallacy through Semantic Dictionaries and AST-Mapped Instruction**
-**Author:** [Your Name/dzineer]
+**Author:** [Frank Decker/dzineer]
 **Date:** April 2026
 **Version:** 1.0 (Initial Draft)
 ## **1. ABSTRACT**
