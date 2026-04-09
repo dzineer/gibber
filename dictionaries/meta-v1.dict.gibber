@@ -1,0 +1,287 @@
+---
+id: META-V1-DICT
+gibber_dict: meta/v1
+format: dict.gibber/1
+---
+
+;; meta/v1 — base vocabulary for Gibber working files.
+;;
+;; This is the structured form of the dictionary defined in prose at
+;; GIBBER-DICTIONARY.md. It is the authoritative definition of the
+;; meta/v1 base vocabulary. All other dictionaries (project extensions,
+;; organization-defined dictionaries) should `§extends:["meta/v1"]`.
+;;
+;; Phase 1 of the org-dictionaries project (see
+;; docs/org-dictionaries.md) migrates this dictionary from prose to
+;; structured form. Phase 2 will add executable rules on top of the
+;; entries defined here.
+;;
+;; If a symbol is in GIBBER-DICTIONARY.md but not here, it has not yet
+;; been migrated to the structured format. The prose document remains
+;; the fallback reference until migration is complete.
+
+(§dictionary
+  §id:"meta/v1"
+  §version:"1.0.0"
+  §description:"Base vocabulary for all Gibber working files — tasks, learning entries, session logs, memory dumps, audits, verifier records."
+  §extends:[]
+  §migration-note:"Phase 1 structural migration. Not exhaustive — the core vocabulary used in practice is migrated; edge-case symbols remain in the prose GIBBER-DICTIONARY.md."
+
+  §entries:[
+
+    ;; ---------------------------------------------------------------
+    ;; Top-level forms
+    ;; ---------------------------------------------------------------
+
+    (§symbol §name:§task
+      §kind:§top-level-form
+      §summary:"A unit of work with id, status, owner, goal, files, todo, budget, tests."
+      §fields:[
+        (§field §name:§id §type:§string §required:true)
+        (§field §name:§status §type:(§enum §wip §queued §blocked §verifying §verifying-failed §done §abandoned §deferred §pending §idle) §required:true)
+        (§field §name:§title §type:§string §required:false)
+        (§field §name:§owner §type:(§enum §ai §human §pair §auto) §required:false)
+        (§field §name:§phase §type:§symbol §required:false)
+        (§field §name:§depends §type:(§list §of-type:§string) §required:false)
+        (§field §name:§goal §type:§any §required:false)
+        (§field §name:§files §type:(§list §of-type:§string) §required:false)
+        (§field §name:§done §type:(§list §of-type:§any) §required:false)
+        (§field §name:§todo §type:(§list §of-type:§any) §required:false)
+        (§field §name:§budget §type:§any §required:false)
+        (§field §name:§tests §type:§any §required:false)
+        (§field §name:§explanation §type:(§ref §explanation) §required:false)
+        (§field §name:§result §type:§any §required:false)
+        (§field §name:§notes §type:§string §required:false)
+        (§field §name:§completed §type:§string §required:false)
+        (§field §name:§design §type:§string §required:false)])
+
+    (§symbol §name:§index
+      §kind:§top-level-form
+      §summary:"A task index: next, active, completed, later, phases."
+      §fields:[
+        (§field §name:§id §type:§string §required:true)
+        (§field §name:§updated §type:§string §required:false)
+        (§field §name:§next §type:§string §required:false)
+        (§field §name:§active §type:(§list §of-type:§string) §required:false)
+        (§field §name:§completed §type:(§list §of-type:§string) §required:false)
+        (§field §name:§later §type:(§list §of-type:§string) §required:false)
+        (§field §name:§phases §type:(§list §of-type:(§ref §phase)) §required:false)
+        (§field §name:§note §type:§string §required:false)])
+
+    (§symbol §name:§completed
+      §kind:§top-level-form
+      §summary:"A list of completed tasks with full explanations."
+      §fields:[
+        (§field §name:§id §type:§string §required:true)
+        (§field §name:§updated §type:§string §required:false)
+        (§field §name:§tasks §type:(§list §of-type:(§ref §task)) §required:true)])
+
+    (§symbol §name:§learning
+      §kind:§top-level-form
+      §summary:"A learning log or a single learning entry: failure, what was tried, outcome, lesson."
+      §fields:[
+        (§field §name:§id §type:§string §required:true)
+        (§field §name:§updated §type:§string §required:false)
+        (§field §name:§entries §type:(§list §of-type:(§ref §learning)) §required:false)
+        (§field §name:§created §type:§string §required:false)
+        (§field §name:§context §type:§any §required:false)
+        (§field §name:§tried §type:(§list §of-type:§any) §required:false)
+        (§field §name:§result-fix §type:§symbol §required:false)
+        (§field §name:§lesson §type:§any §required:false)
+        (§field §name:§rule-added §type:§string §required:false)])
+
+    (§symbol §name:§audit
+      §kind:§top-level-form
+      §summary:"An audit record: ground-truth check of a codebase, task, or claim."
+      §fields:[
+        (§field §name:§id §type:§string §required:true)
+        (§field §name:§date §type:§string §required:false)
+        (§field §name:§auditor §type:§string §required:false)
+        (§field §name:§scope §type:§string §required:false)
+        (§field §name:§trigger §type:§string §required:false)
+        (§field §name:§method §type:(§list §of-type:§any) §required:false)
+        (§field §name:§initial-state §type:§any §required:false)
+        (§field §name:§post-repair-state §type:§any §required:false)
+        (§field §name:§drift-findings §type:§any §required:false)
+        (§field §name:§health-assessment §type:§any §required:false)
+        (§field §name:§decision §type:§any §required:false)
+        (§field §name:§verdict §type:§symbol §required:false)])
+
+    (§symbol §name:§verification
+      §kind:§top-level-form
+      §summary:"An independent verification of a task or claim."
+      §fields:[
+        (§field §name:§task §type:§string §required:true)
+        (§field §name:§verified-by §type:§string §required:false)
+        (§field §name:§verified-at §type:§string §required:false)
+        (§field §name:§verdict §type:(§enum §verified §rejected) §required:true)
+        (§field §name:§claims-checked §type:§int §required:false)
+        (§field §name:§claims-passed §type:§int §required:false)
+        (§field §name:§claims-failed §type:§int §required:false)
+        (§field §name:§rejected-claims §type:(§list §of-type:§any) §required:false)
+        (§field §name:§notes §type:§string §required:false)])
+
+    (§symbol §name:§dictionary
+      §kind:§top-level-form
+      §summary:"A structured Gibber dictionary — the thing this file is."
+      §fields:[
+        (§field §name:§id §type:§string §required:true)
+        (§field §name:§version §type:§string §required:true)
+        (§field §name:§description §type:§string §required:false)
+        (§field §name:§extends §type:(§list §of-type:§string) §required:false)
+        (§field §name:§entries §type:(§list §of-type:(§ref §symbol)) §required:true)
+        (§field §name:§migration-note §type:§string §required:false)])
+
+    ;; ---------------------------------------------------------------
+    ;; Nested forms (appear inside top-level forms)
+    ;; ---------------------------------------------------------------
+
+    (§symbol §name:§explanation
+      §kind:§nested-form
+      §summary:"A detailed explanation of work done, claims made, learned lessons."
+      §fields:[
+        (§field §name:§did §type:(§list §of-type:§any) §required:false)
+        (§field §name:§claims §type:(§list §of-type:(§ref §claim)) §required:false)
+        (§field §name:§deferred §type:(§list §of-type:§any) §required:false)
+        (§field §name:§learned §type:(§list §of-type:§any) §required:false)
+        (§field §name:§invariants-enforced §type:(§list §of-type:§string) §required:false)
+        (§field §name:§scope-decision §type:§any §required:false)])
+
+    (§symbol §name:§claim
+      §kind:§nested-form
+      §summary:"A verifiable claim about the result of a piece of work."
+      §fields:[
+        (§field §name:§kind §type:(§enum §exists §contains §matches §passed §equals §absent) §required:false)
+        (§field §name:§file §type:§string §required:false)
+        (§field §name:§value §type:§string §required:false)
+        (§field §name:§pattern §type:§string §required:false)
+        (§field §name:§cmd §type:§string §required:false)
+        (§field §name:§expected §type:§any §required:false)])
+
+    (§symbol §name:§check
+      §kind:§nested-form
+      §summary:"A predicate evaluated by a verifier against a task's claims."
+      §fields:[
+        (§field §name:§kind §type:(§enum §exists §contains §matches §passed §equals §absent) §required:true)
+        (§field §name:§file §type:§string §required:false)
+        (§field §name:§value §type:§string §required:false)
+        (§field §name:§pattern §type:§string §required:false)
+        (§field §name:§cmd §type:§string §required:false)])
+
+    (§symbol §name:§phase
+      §kind:§nested-form
+      §summary:"A group of related tasks inside an index."
+      §fields:[
+        (§field §name:§id §type:§symbol §required:true)
+        (§field §name:§title §type:§string §required:true)
+        (§field §name:§tasks §type:(§list §of-type:§string) §required:true)
+        (§field §name:§design §type:§string §required:false)])
+
+    (§symbol §name:§symbol
+      §kind:§nested-form
+      §summary:"A single symbol entry inside a dictionary."
+      §fields:[
+        (§field §name:§name §type:§symbol §required:true)
+        (§field §name:§kind §type:(§enum §top-level-form §nested-form §field §value §verb) §required:true)
+        (§field §name:§summary §type:§string §required:true)
+        (§field §name:§fields §type:(§list §of-type:(§ref §field)) §required:false)
+        (§field §name:§of-type §type:§symbol §required:false)])
+
+    (§symbol §name:§field
+      §kind:§nested-form
+      §summary:"A named field on a Gibber form."
+      §fields:[
+        (§field §name:§name §type:§symbol §required:true)
+        (§field §name:§type §type:§any §required:true)
+        (§field §name:§required §type:§bool §required:true)])
+
+    ;; ---------------------------------------------------------------
+    ;; Field-position symbols (often used as §key:value pairs)
+    ;; ---------------------------------------------------------------
+
+    (§symbol §name:§id §kind:§field §summary:"Unique identifier.")
+    (§symbol §name:§title §kind:§field §summary:"Short human-readable title.")
+    (§symbol §name:§status §kind:§field §summary:"Current workflow state.")
+    (§symbol §name:§owner §kind:§field §summary:"Who owns this unit of work.")
+    (§symbol §name:§created §kind:§field §summary:"Creation timestamp (ISO 8601).")
+    (§symbol §name:§updated §kind:§field §summary:"Last-update timestamp (ISO 8601).")
+    (§symbol §name:§completed §kind:§field §summary:"Completion timestamp (ISO 8601).")
+    (§symbol §name:§phase §kind:§field §summary:"Phase id this work belongs to.")
+    (§symbol §name:§depends §kind:§field §summary:"Prerequisites — task ids this work depends on.")
+    (§symbol §name:§design §kind:§field §summary:"Path or id of the design document.")
+    (§symbol §name:§goal §kind:§field §summary:"The intended outcome.")
+    (§symbol §name:§files §kind:§field §summary:"Files this work touches.")
+    (§symbol §name:§done §kind:§field §summary:"Steps already completed.")
+    (§symbol §name:§todo §kind:§field §summary:"Steps not yet completed.")
+    (§symbol §name:§budget §kind:§field §summary:"Time, token, latency, or accuracy budget.")
+    (§symbol §name:§tests §kind:§field §summary:"Tests that must pass before done.")
+    (§symbol §name:§notes §kind:§field §summary:"Free-form notes.")
+    (§symbol §name:§result §kind:§field §summary:"What was produced.")
+    (§symbol §name:§verdict §kind:§field §summary:"The verifier's conclusion.")
+
+    ;; ---------------------------------------------------------------
+    ;; Status values
+    ;; ---------------------------------------------------------------
+
+    (§symbol §name:§wip §kind:§value §of-type:§status §summary:"Work in progress.")
+    (§symbol §name:§queued §kind:§value §of-type:§status §summary:"Queued, not yet started.")
+    (§symbol §name:§blocked §kind:§value §of-type:§status §summary:"Blocked on a dependency or external factor.")
+    (§symbol §name:§verifying §kind:§value §of-type:§status §summary:"Done, being verified by an independent agent.")
+    (§symbol §name:§verifying-failed §kind:§value §of-type:§status §summary:"Verification rejected at least one claim.")
+    (§symbol §name:§done §kind:§value §of-type:§status §summary:"Completed and verified.")
+    (§symbol §name:§abandoned §kind:§value §of-type:§status §summary:"Stopped, will not be completed.")
+    (§symbol §name:§deferred §kind:§value §of-type:§status §summary:"Pushed to a later phase or version.")
+    (§symbol §name:§pending §kind:§value §of-type:§status §summary:"Defined but not yet picked up.")
+    (§symbol §name:§idle §kind:§value §of-type:§status §summary:"No active task.")
+
+    ;; ---------------------------------------------------------------
+    ;; Owner values
+    ;; ---------------------------------------------------------------
+
+    (§symbol §name:§ai §kind:§value §of-type:§owner §summary:"The AI agent.")
+    (§symbol §name:§human §kind:§value §of-type:§owner §summary:"The human user.")
+    (§symbol §name:§pair §kind:§value §of-type:§owner §summary:"Joint AI/human work.")
+    (§symbol §name:§auto §kind:§value §of-type:§owner §summary:"Automated process (CI, hook, cron).")
+
+    ;; ---------------------------------------------------------------
+    ;; Verdict values
+    ;; ---------------------------------------------------------------
+
+    (§symbol §name:§verified §kind:§value §of-type:§verdict §summary:"The verifier accepted all claims.")
+    (§symbol §name:§rejected §kind:§value §of-type:§verdict §summary:"The verifier rejected at least one claim.")
+
+    ;; ---------------------------------------------------------------
+    ;; Check/claim predicates
+    ;; ---------------------------------------------------------------
+
+    (§symbol §name:§exists §kind:§value §of-type:§check-kind §summary:"A file exists at the given path.")
+    (§symbol §name:§contains §kind:§value §of-type:§check-kind §summary:"A file contains the given substring.")
+    (§symbol §name:§matches §kind:§value §of-type:§check-kind §summary:"A file matches the given regex pattern.")
+    (§symbol §name:§passed §kind:§value §of-type:§check-kind §summary:"A command exited with status zero.")
+    (§symbol §name:§equals §kind:§value §of-type:§check-kind §summary:"Two values are string-equal.")
+    (§symbol §name:§absent §kind:§value §of-type:§check-kind §summary:"A file does not exist.")
+
+    ;; ---------------------------------------------------------------
+    ;; Verbs (used in §did lists and narrative blocks)
+    ;; ---------------------------------------------------------------
+
+    (§symbol §name:§wrote §kind:§verb §summary:"Created or authored.")
+    (§symbol §name:§ran §kind:§verb §summary:"Executed a command or process.")
+    (§symbol §name:§fixed §kind:§verb §summary:"Repaired a defect.")
+    (§symbol §name:§edited §kind:§verb §summary:"Modified an existing file.")
+    (§symbol §name:§added §kind:§verb §summary:"Added something new.")
+    (§symbol §name:§extended §kind:§verb §summary:"Extended an existing structure.")
+    (§symbol §name:§discovered §kind:§verb §summary:"Found during investigation.")
+    (§symbol §name:§verified §kind:§verb §summary:"Confirmed correctness.")
+    (§symbol §name:§reverted §kind:§verb §summary:"Undid a previous change.")
+    (§symbol §name:§removed §kind:§verb §summary:"Deleted or unlinked.")
+    (§symbol §name:§saw §kind:§verb §summary:"Observed or witnessed.")
+    (§symbol §name:§tried §kind:§verb §summary:"Attempted but did not necessarily succeed.")
+
+    ;; ---------------------------------------------------------------
+    ;; Bool values
+    ;; ---------------------------------------------------------------
+
+    (§symbol §name:§true §kind:§value §of-type:§bool §summary:"Boolean true.")
+    (§symbol §name:§false §kind:§value §of-type:§bool §summary:"Boolean false.")
+  ])

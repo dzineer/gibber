@@ -1,0 +1,18 @@
+---
+id: BAD-DUPLICATE
+format: dict.gibber/1
+---
+
+;; A deliberately broken dictionary: the same symbol name appears
+;; twice. The loader should reject this with a "duplicate symbol"
+;; parse error.
+
+(§dictionary
+  §id:"bad-duplicate/v1"
+  §version:"0.0.1"
+  §description:"Test input — should fail parsing with duplicate symbol."
+  §extends:[]
+  §entries:[
+    (§symbol §name:§foo §kind:§top-level-form §summary:"First foo.")
+    (§symbol §name:§foo §kind:§top-level-form §summary:"Duplicate foo.")
+  ])

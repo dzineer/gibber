@@ -1,0 +1,16 @@
+---
+id: BAD-KIND
+format: dict.gibber/1
+---
+
+;; A deliberately broken dictionary: an entry uses an unknown §kind.
+;; The validator should report this as an error.
+
+(§dictionary
+  §id:"bad-kind/v1"
+  §version:"0.0.1"
+  §description:"Test input — should fail validation with unknown kind."
+  §extends:[]
+  §entries:[
+    (§symbol §name:§foo §kind:§wizard-form §summary:"Not a valid kind.")
+  ])
