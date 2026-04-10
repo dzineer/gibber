@@ -21,6 +21,7 @@
     <nav class="hidden items-center gap-6 text-xs text-ink-mid md:flex">
       <a href="/gibber/" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Home</a>
       <a href="#openvox" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">OpenVox TTS</a>
+      <a href="#jarvis" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Jarvis AI</a>
       <a href="#verdict" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Verdict</a>
       <a href="#methodology" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Methodology</a>
     </nav>
@@ -233,12 +234,289 @@
 
 <div class="hairline"></div>
 
+<!-- Case Study 2: Jarvis -->
+<section id="jarvis" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Case Study 002</p>
+    <h2 class="h-section mb-6">Building Jarvis: a full AI assistant <span class="text-accent">with Gibber as the spine</span></h2>
+    <p class="lede mb-12">A multi-phase Rust project building a voice-controlled AI personal assistant. 45 Gibber files, 12 research digests, 16 task files, 202 dictionary symbols, 2,500 lines of Rust &mdash; all managed through Gibber from day one. This is the project Gibber was designed for.</p>
+
+    <!-- metadata chips -->
+    <div class="flex flex-wrap gap-2 mb-12">
+      <span class="chip"><span class="h-1.5 w-1.5 rounded-full bg-accent"></span>2026-04-11</span>
+      <span class="chip">Claude Opus 4.6</span>
+      <span class="chip">16 tasks</span>
+      <span class="chip">Long session, multi-phase</span>
+      <span class="chip">Rust + Apple Silicon</span>
+      <span class="chip">45 .gibber files</span>
+    </div>
+
+    <!-- the project -->
+    <div class="card p-6 mb-8">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">The project</h3>
+      <p class="text-ink-mid text-sm leading-relaxed mb-4">
+        <strong class="text-ink-hi">Jarvis</strong> is a voice-controlled, conversational AI personal assistant written in Rust. It receives voice commands, controls the computer, writes code, has persistent memory, and is extensible via MCP. The memory subsystem alone required deep research across vector databases, knowledge graphs, wiki-graphs, and document indexing &mdash; 8 parallel research agents producing findings that were immediately compressed into Gibber digests for the AI to reason over.
+      </p>
+      <div class="grid gap-4 md:grid-cols-3 mt-6">
+        <div class="rounded-lg border border-line bg-bg-raised p-4">
+          <div class="text-xs text-ink-lo uppercase tracking-[0.15em] mb-1">Stack</div>
+          <div class="text-sm text-ink-hi">Rust + SQLite + usearch + tantivy + fastembed</div>
+        </div>
+        <div class="rounded-lg border border-line bg-bg-raised p-4">
+          <div class="text-xs text-ink-lo uppercase tracking-[0.15em] mb-1">Gibber version</div>
+          <div class="font-mono text-sm text-ink-hi">gibber/4 dict-meta/v2</div>
+        </div>
+        <div class="rounded-lg border border-line bg-bg-raised p-4">
+          <div class="text-xs text-ink-lo uppercase tracking-[0.15em] mb-1">Outcome</div>
+          <div class="text-sm text-accent font-semibold">Memory system working end-to-end</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- gibber file ecosystem -->
+    <div class="card p-6 mb-8">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">The Gibber ecosystem this project produced</h3>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mt-4">
+        <div class="rounded-lg border border-line bg-bg-raised p-4 text-center">
+          <div class="text-3xl font-semibold text-accent">45</div>
+          <div class="text-xs text-ink-lo mt-1">.gibber files total</div>
+        </div>
+        <div class="rounded-lg border border-line bg-bg-raised p-4 text-center">
+          <div class="text-3xl font-semibold text-accent">12</div>
+          <div class="text-xs text-ink-lo mt-1">research digests</div>
+        </div>
+        <div class="rounded-lg border border-line bg-bg-raised p-4 text-center">
+          <div class="text-3xl font-semibold text-accent">202</div>
+          <div class="text-xs text-ink-lo mt-1">dictionary symbols</div>
+        </div>
+        <div class="rounded-lg border border-line bg-bg-raised p-4 text-center">
+          <div class="text-3xl font-semibold text-accent">120KB</div>
+          <div class="text-xs text-ink-lo mt-1">total Gibber data</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- sample: research digest in gibber -->
+    <div class="card overflow-hidden mb-8">
+      <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+        <span class="font-mono">memory/warm/D003.gibber (excerpt &mdash; knowledge graph digest)</span>
+        <span class="chip !border-line !bg-transparent !py-0.5 text-[10px] uppercase tracking-[0.2em] text-accent">gibber</span>
+      </div>
+      <pre class="overflow-x-auto p-5 text-[13px] font-mono leading-relaxed"><code><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;digest</span> <span class="text-gib-key">&#167;id:</span><span class="text-ink-mid">D003</span>
+  <span class="text-gib-key">&#167;thesis:</span><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;for</span> <span class="text-gib-sym">&#167;ai-agent-memory</span> <span class="text-gib-sym">&#167;in</span> <span class="text-gib-sym">&#167;rust</span>
+    <span class="text-gib-key">&#167;best-options:</span><span class="text-gib-paren">[</span><span class="text-gib-sym">&#167;cozo</span> <span class="text-gib-sym">&#167;surrealdb</span> <span class="text-gib-sym">&#167;grafeo</span><span class="text-gib-paren">]</span>
+    <span class="text-gib-sym">&#167;cozo</span> <span class="text-gib-sym">&#167;is</span> <span class="text-gib-sym">&#167;best-fit</span> <span class="text-gib-key">&#167;because:</span><span class="text-gib-paren">[</span><span class="text-gib-sym">&#167;datalog-reasoning</span> <span class="text-gib-sym">&#167;hnsw-vectors</span> <span class="text-gib-sym">&#167;embedded</span><span class="text-gib-paren">]</span><span class="text-gib-paren">)</span>
+
+  <span class="text-gib-key">&#167;findings:</span><span class="text-gib-paren">[</span>
+    <span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;finding</span> <span class="text-gib-sym">&#167;cozo</span> <span class="text-gib-sym">&#167;best-fit</span>
+      <span class="text-gib-key">&#167;evidence:</span><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;cozo</span>
+        <span class="text-gib-key">&#167;lang:</span><span class="text-gib-sym">&#167;rust</span> <span class="text-gib-key">&#167;embedded:</span><span class="text-gib-sym">&#167;yes</span> <span class="text-gib-key">&#167;graph:</span><span class="text-gib-sym">&#167;yes</span> <span class="text-gib-key">&#167;vector:</span><span class="text-gib-sym">&#167;hnsw</span>
+        <span class="text-gib-key">&#167;perf:</span><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;100k-qps-mixed</span> <span class="text-gib-sym">&#167;250k-qps-read</span><span class="text-gib-paren">)</span><span class="text-gib-paren">)</span><span class="text-gib-paren">)</span><span class="text-gib-paren">]</span>
+
+  <span class="text-gib-key">&#167;takeaway:</span><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;for-jarvis-memory-system</span>
+    <span class="text-gib-key">&#167;recommendation:</span><span class="text-gib-sym">&#167;cozo-as-knowledge-graph-layer</span>
+    <span class="text-gib-key">&#167;build-vs-buy:</span><span class="text-gib-sym">&#167;buy-cozo</span> <span class="text-gib-sym">&#167;dont-build-from-petgraph</span><span class="text-gib-paren">)</span>
+  <span class="text-gib-key">&#167;confidence:</span><span class="text-gib-sym">&#167;high</span><span class="text-gib-paren">)</span></code></pre>
+    </div>
+
+    <!-- sample: learning log -->
+    <div class="card overflow-hidden mb-8">
+      <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+        <span class="font-mono">learning.gibber (excerpt &mdash; agent captures its own mistake)</span>
+        <span class="chip !border-line !bg-transparent !py-0.5 text-[10px] uppercase tracking-[0.2em] text-accent">gibber</span>
+      </div>
+      <pre class="overflow-x-auto p-5 text-[13px] font-mono leading-relaxed"><code><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;learning</span> <span class="text-gib-key">&#167;id:</span><span class="text-ink-mid">L005</span>
+  <span class="text-gib-key">&#167;context:</span><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;cozo</span> <span class="text-gib-sym">&#167;0.7.6</span> <span class="text-gib-sym">&#167;fails-to-compile</span><span class="text-gib-paren">)</span>
+  <span class="text-gib-key">&#167;tried:</span><span class="text-gib-paren">[</span><span class="text-gib-sym">&#167;cozo-default-features</span> <span class="text-gib-sym">&#167;cozo-minimal-features</span><span class="text-gib-paren">]</span>
+  <span class="text-gib-key">&#167;result-fix:</span><span class="text-gib-sym">&#167;not-fixed</span>
+  <span class="text-gib-key">&#167;lesson:</span><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;cozo-0.7.6</span> <span class="text-gib-sym">&#167;broken</span>
+    <span class="text-gib-sym">&#167;pivot-to</span> <span class="text-gib-paren">[</span><span class="text-gib-sym">&#167;rusqlite</span> <span class="text-gib-sym">&#167;hnswlib-rs</span> <span class="text-gib-sym">&#167;tantivy</span><span class="text-gib-paren">]</span>
+    <span class="text-gib-sym">&#167;user-was-right</span> <span class="text-gib-sym">&#167;about</span> <span class="text-gib-sym">&#167;checking-deprecation-first</span><span class="text-gib-paren">)</span><span class="text-gib-paren">)</span></code></pre>
+    </div>
+
+    <!-- what worked / what didn't -->
+    <div class="grid gap-5 md:grid-cols-2 mb-8">
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">What worked</h3>
+        <div class="space-y-3">
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <div>
+              <strong class="text-ink-hi">Research digests as dense knowledge.</strong>
+              <span class="text-ink-mid"> 8 research agents ran in parallel, each producing massive findings. Compressing each into a Gibber <code class="font-mono text-gib-sym">&#167;digest</code> form meant the AI could hold 12 research papers' worth of knowledge in ~12K tokens instead of ~60K+ in English. That's 5x compression on research data.</span>
+            </div>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <div>
+              <strong class="text-ink-hi">Learning log prevented repeated mistakes.</strong>
+              <span class="text-ink-mid"> The agent recorded 7 lessons (L001-L007) as structured Gibber entries: "cozo doesn't compile," "no Python," "always check deprecation first." These are machine-parseable &mdash; a future agent can read them and avoid the same errors without re-learning from conversation.</span>
+            </div>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <div>
+              <strong class="text-ink-hi">Dictionary extension scaled naturally.</strong>
+              <span class="text-ink-mid"> Started with 0 project symbols, grew to 202 organically as research domains expanded (vector DBs, knowledge graphs, wiki-graphs, document indexing, voice, computer control). Each domain added its symbols before using them &mdash; no undefined symbols, no ambiguity.</span>
+            </div>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <div>
+              <strong class="text-ink-hi">Synthesis form unified research.</strong>
+              <span class="text-ink-mid"> The <code class="font-mono text-gib-sym">&#167;synthesis</code> form (SYN001.gibber) cross-referenced all 12 digests into one architectural recommendation. 11 key insights, a final tech stack, a build order, and performance targets &mdash; all in ~2K tokens.</span>
+            </div>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <div>
+              <strong class="text-ink-hi">Parser dogfooding found real bugs.</strong>
+              <span class="text-ink-mid"> Building a Rust parser for Gibber (gibber-parse, 38 tests) and running it against all 45 .gibber files found patterns the spec didn't anticipate: dates as identifiers, <code class="font-mono text-gib-sym">&#167;"quoted symbols"</code>, compound operators like <code class="font-mono text-gib-key">&#167;p-value:&lt;0.001</code>, and numbers with hyphenated units. The spec evolved from contact with reality.</span>
+            </div>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <div>
+              <strong class="text-ink-hi">Architecture decisions tracked as structured data.</strong>
+              <span class="text-ink-mid"> When Cozo failed to compile, the agent updated MEMORY.gibber with the new architecture, recorded the lesson in learning.gibber, and updated the task index &mdash; all as machine-readable Gibber forms. No prose to re-parse later.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-amber-300/80 mb-4">What didn't</h3>
+        <div class="space-y-3">
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-amber-300/80"></span>
+            <div>
+              <strong class="text-ink-hi">Agent jumped to code before setting up Gibber.</strong>
+              <span class="text-ink-mid"> The AI started writing Cargo.toml before creating task files, session logs, or memory entries. The user had to correct this twice. Lesson recorded as L001. The protocol didn't prevent the agent from ignoring it.</span>
+            </div>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-amber-300/80"></span>
+            <div>
+              <strong class="text-ink-hi">Spec doesn't cover all real patterns.</strong>
+              <span class="text-ink-mid"> The formal Gibber spec says symbols are "lowercase ASCII," but real usage needed uppercase (<code class="font-mono">JARVIS-IDENTITY</code>), dates (<code class="font-mono">2026-04-11</code>), timestamps, positive numbers (<code class="font-mono">+7.9</code>), and quoted symbols (<code class="font-mono">&#167;"hippocampus for AI"</code>). The parser had to be extended beyond the spec.</span>
+            </div>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-amber-300/80"></span>
+            <div>
+              <strong class="text-ink-hi">Digest density has a readability floor.</strong>
+              <span class="text-ink-mid"> Some research digests became so dense they were hard even for the AI to navigate. D003.gibber (knowledge graphs, ~9KB) packs 15 database comparisons with benchmarks, licenses, and features into nested S-expressions. Dense is good; impenetrable is not.</span>
+            </div>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-amber-300/80"></span>
+            <div>
+              <strong class="text-ink-hi">No validation tooling yet.</strong>
+              <span class="text-ink-mid"> The agent wrote .gibber files freehand. Several had patterns the parser couldn't handle (found during round-trip testing). A <code class="font-mono">gibber validate</code> command run at write-time would have caught these immediately.</span>
+            </div>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-amber-300/80"></span>
+            <div>
+              <strong class="text-ink-hi">Task index maintenance is manual.</strong>
+              <span class="text-ink-mid"> Every time a task was added, the agent had to manually update <code class="font-mono">tasks_index.gibber</code> to add the new ID to the right phase. This should be automated.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- metrics table -->
+    <div class="card overflow-hidden mb-8">
+      <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+        <span>Measured metrics</span>
+      </div>
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-line text-left text-xs uppercase tracking-[0.15em] text-ink-lo">
+            <th class="px-4 py-3 font-medium">Metric</th>
+            <th class="px-4 py-3 font-medium">Gibber</th>
+            <th class="px-4 py-3 font-medium">English equiv.</th>
+            <th class="px-4 py-3 font-medium">Delta</th>
+          </tr>
+        </thead>
+        <tbody class="text-ink-mid">
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">12 research digests (total)</td>
+            <td class="px-4 py-3 font-mono text-accent">~12,000 tok</td>
+            <td class="px-4 py-3 font-mono">~60,000+ tok</td>
+            <td class="px-4 py-3 font-semibold text-accent">5x denser</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Master synthesis (SYN001)</td>
+            <td class="px-4 py-3 font-mono text-accent">~2,000 tok</td>
+            <td class="px-4 py-3 font-mono">~8,000 tok</td>
+            <td class="px-4 py-3 font-semibold text-accent">4x denser</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">16 task files</td>
+            <td class="px-4 py-3 font-mono text-accent">~3,200 tok</td>
+            <td class="px-4 py-3 font-mono">~7,500 tok</td>
+            <td class="px-4 py-3 font-semibold text-accent">2.3x denser</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Learning log (7 entries)</td>
+            <td class="px-4 py-3 font-mono text-accent">~900 tok</td>
+            <td class="px-4 py-3 font-mono">~2,400 tok</td>
+            <td class="px-4 py-3 font-semibold text-accent">2.7x denser</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Architecture identity (JARVIS-IDENTITY)</td>
+            <td class="px-4 py-3 font-mono text-accent">~700 tok</td>
+            <td class="px-4 py-3 font-mono">~2,100 tok</td>
+            <td class="px-4 py-3 font-semibold text-accent">3x denser</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">All 45 .gibber files combined</td>
+            <td class="px-4 py-3 font-mono text-accent">~22,000 tok</td>
+            <td class="px-4 py-3 font-mono">~90,000+ tok</td>
+            <td class="px-4 py-3 font-semibold text-accent">4.1x denser overall</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Spec + dict read cost (first session)</td>
+            <td class="px-4 py-3 font-mono text-amber-300/80">~5,000 tok</td>
+            <td class="px-4 py-3 font-mono">0 tok</td>
+            <td class="px-4 py-3 font-semibold text-amber-300/80">one-time cost</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Project dictionary</td>
+            <td class="px-4 py-3 font-mono">202 symbols</td>
+            <td class="px-4 py-3 font-mono">n/a</td>
+            <td class="px-4 py-3 text-ink-lo">grew organically across 6 domains</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-3 text-ink-hi">Rust parser tests (gibber-parse)</td>
+            <td class="px-4 py-3 font-mono">38 tests, all passing</td>
+            <td class="px-4 py-3 font-mono">n/a</td>
+            <td class="px-4 py-3 text-ink-lo">round-trips all 45 files</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- bottom-line card -->
+    <div class="card p-6 bg-accent/[0.04] border-accent/30">
+      <p class="text-sm text-ink-mid leading-relaxed">
+        <strong class="text-ink-hi">Bottom line for Jarvis:</strong> Gibber was net-positive and <em>dramatically</em> so. The 5,000-token spec-reading cost was amortized within the first two research digests. By digest #12, the system had saved ~68,000 tokens compared to English &mdash; that's context budget the AI used for actual reasoning instead of re-reading verbose prose. The research-digest pattern (<code class="font-mono text-gib-sym">&#167;digest</code>) proved to be Gibber's killer use case: compressing complex multi-source research into dense, structured, cross-referenceable forms that survive compaction and can be synthesized. The learning log (<code class="font-mono text-gib-sym">&#167;learning</code>) prevented at least 2 repeated mistakes during the session. This is the project type Gibber was built for: long-running, multi-phase, research-heavy, with real architectural decisions to track.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<div class="hairline"></div>
+
 <!-- Verdict -->
 <section id="verdict" class="section scroll-mt-20">
   <div class="container-prose">
     <p class="kicker">Honest verdict</p>
     <h2 class="h-section mb-6">When Gibber <span class="text-accent">earns its keep</span></h2>
-    <p class="lede mb-12">Gibber is not universally better. It has a specific sweet spot and a clear zone where it's overkill.</p>
+    <p class="lede mb-12">Two case studies, opposite results. OpenVox (small, single-session) was net-negative. Jarvis (large, multi-phase, research-heavy) was net-positive by ~68K tokens. The pattern is clear.</p>
 
     <div class="grid gap-5 md:grid-cols-2">
       <div class="card p-6 border-accent/30">
