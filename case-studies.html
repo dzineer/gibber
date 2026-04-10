@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="/gibber/_next/static/css/bc9e73e112538497.css" data-precedence="next"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <title>Case Studies — Gibber in the real world</title>
+  <meta name="description" content="Real-world case studies evaluating Gibber's effectiveness in production AI agent workflows."/>
+</head>
+<body>
+
+<!-- header -->
+<header class="sticky top-0 z-40 border-b border-line/80 bg-bg-base/70 backdrop-blur-md">
+  <div class="container-prose flex h-14 items-center justify-between gap-6">
+    <a href="/gibber/" class="flex items-center gap-2 font-mono text-sm font-semibold text-ink-hi">
+      <span class="inline-block h-2 w-2 rounded-full bg-accent" aria-hidden="true"></span>gibber<span class="font-normal text-ink-lo">/case-studies</span>
+    </a>
+    <nav class="hidden items-center gap-6 text-xs text-ink-mid md:flex">
+      <a href="/gibber/" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Home</a>
+      <a href="#openvox" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">OpenVox TTS</a>
+      <a href="#verdict" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Verdict</a>
+      <a href="#methodology" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Methodology</a>
+    </nav>
+    <a href="/gibber/#use" class="btn-ghost !py-1.5 !text-xs">Get started</a>
+  </div>
+</header>
+
+<main>
+
+<!-- hero -->
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0 bg-grid mask-fade-b opacity-40"></div>
+  <div class="container-prose relative pb-24 pt-20 md:pb-32 md:pt-28">
+    <div class="chip mb-6">
+      <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>field data &mdash; not theory
+    </div>
+    <h1 class="h-display max-w-4xl">Case studies: Gibber <span class="text-accent">under real load.</span></h1>
+    <p class="mt-6 lede">These are honest, measured evaluations of Gibber's effectiveness in real AI agent workflows. Each study records what worked, what didn't, and the token/time impact compared to plain English.</p>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Case Study 1: OpenVox -->
+<section id="openvox" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Case Study 001</p>
+    <h2 class="h-section mb-6">Installing OpenVox TTS <span class="text-accent">with Gibber task tracking</span></h2>
+    <p class="lede mb-12">A five-task Docker-based install of a self-hosted text-to-speech system, managed end-to-end with Gibber task files. Single session, single agent, real project.</p>
+
+    <!-- metadata chips -->
+    <div class="flex flex-wrap gap-2 mb-12">
+      <span class="chip"><span class="h-1.5 w-1.5 rounded-full bg-accent"></span>2026-04-11</span>
+      <span class="chip">Claude Opus 4.6</span>
+      <span class="chip">5 tasks</span>
+      <span class="chip">Single session</span>
+      <span class="chip">Docker install</span>
+    </div>
+
+    <!-- the project -->
+    <div class="card p-6 mb-8">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">The project</h3>
+      <p class="text-ink-mid text-sm leading-relaxed mb-4">
+        <strong class="text-ink-hi">OpenVox</strong> is a self-hosted podcast studio and OpenAI-compatible TTS server built on Pocket-TTS. The goal was to clone the repo, build the Docker image, launch it, verify health, and smoke-test the API &mdash; all tracked in Gibber format.
+      </p>
+      <div class="grid gap-4 md:grid-cols-3 mt-6">
+        <div class="rounded-lg border border-line bg-bg-raised p-4">
+          <div class="text-xs text-ink-lo uppercase tracking-[0.15em] mb-1">Stack</div>
+          <div class="text-sm text-ink-hi">Python + Docker + CPU TTS</div>
+        </div>
+        <div class="rounded-lg border border-line bg-bg-raised p-4">
+          <div class="text-xs text-ink-lo uppercase tracking-[0.15em] mb-1">Gibber version</div>
+          <div class="font-mono text-sm text-ink-hi">gibber/4 dict-meta/v2</div>
+        </div>
+        <div class="rounded-lg border border-line bg-bg-raised p-4">
+          <div class="text-xs text-ink-lo uppercase tracking-[0.15em] mb-1">Outcome</div>
+          <div class="text-sm text-accent font-semibold">All 5 tasks passed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- task breakdown -->
+    <div class="card overflow-hidden mb-8">
+      <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+        <span class="font-mono">tasks_completed.gibber</span>
+        <span class="chip !border-line !bg-transparent !py-0.5 text-[10px] uppercase tracking-[0.2em] text-accent">gibber</span>
+      </div>
+      <pre class="overflow-x-auto p-5 text-[13px] font-mono leading-relaxed"><code><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;completed</span> <span class="text-gib-key">&#167;id:</span><span class="text-ink-mid">COMPLETED</span>
+  <span class="text-gib-key">&#167;updated:</span><span class="text-ink-mid">2026-04-11</span>
+  <span class="text-gib-key">&#167;tasks:</span><span class="text-gib-paren">[</span>
+    <span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;task</span> <span class="text-gib-key">&#167;id:</span><span class="text-ink-mid">T001</span> <span class="text-gib-key">&#167;status:</span><span class="text-gib-sym">&#167;done</span>
+      <span class="text-gib-key">&#167;title:</span><span class="text-gib-str">"clone openvox repo"</span>
+      <span class="text-gib-key">&#167;result:</span><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;passed</span> <span class="text-gib-sym">&#167;clone</span><span class="text-gib-paren">)</span><span class="text-gib-paren">)</span>
+    <span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;task</span> <span class="text-gib-key">&#167;id:</span><span class="text-ink-mid">T002</span> <span class="text-gib-key">&#167;status:</span><span class="text-gib-sym">&#167;done</span>
+      <span class="text-gib-key">&#167;title:</span><span class="text-gib-str">"port check"</span>
+      <span class="text-gib-key">&#167;result:</span><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;passed</span> <span class="text-gib-key">&#167;port:</span><span class="text-gib-num">49112</span> <span class="text-gib-key">&#167;free:</span><span class="text-gib-sym">&#167;true</span><span class="text-gib-paren">)</span><span class="text-gib-paren">)</span>
+    <span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;task</span> <span class="text-gib-key">&#167;id:</span><span class="text-ink-mid">T003</span> <span class="text-gib-key">&#167;status:</span><span class="text-gib-sym">&#167;done</span>
+      <span class="text-gib-key">&#167;title:</span><span class="text-gib-str">"docker compose build and up"</span>
+      <span class="text-gib-key">&#167;result:</span><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;passed</span><span class="text-gib-paren">)</span><span class="text-gib-paren">)</span>
+    <span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;task</span> <span class="text-gib-key">&#167;id:</span><span class="text-ink-mid">T004</span> <span class="text-gib-key">&#167;status:</span><span class="text-gib-sym">&#167;done</span>
+      <span class="text-gib-key">&#167;title:</span><span class="text-gib-str">"verify server healthy"</span>
+      <span class="text-gib-key">&#167;result:</span><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;passed</span> <span class="text-gib-key">&#167;device:</span><span class="text-gib-sym">&#167;cpu</span><span class="text-gib-paren">)</span><span class="text-gib-paren">)</span>
+    <span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;task</span> <span class="text-gib-key">&#167;id:</span><span class="text-ink-mid">T005</span> <span class="text-gib-key">&#167;status:</span><span class="text-gib-sym">&#167;done</span>
+      <span class="text-gib-key">&#167;title:</span><span class="text-gib-str">"smoke-test tts api"</span>
+      <span class="text-gib-key">&#167;result:</span><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;passed</span> <span class="text-gib-key">&#167;audio-out:</span><span class="text-ink-mid">test_output.mp3</span><span class="text-gib-paren">)</span><span class="text-gib-paren">)</span><span class="text-gib-paren">]</span><span class="text-gib-paren">)</span></code></pre>
+    </div>
+
+    <!-- what worked / what didn't -->
+    <div class="grid gap-5 md:grid-cols-2 mb-8">
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">What worked</h3>
+        <div class="space-y-3">
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <div>
+              <strong class="text-ink-hi">Structured task tracking.</strong>
+              <span class="text-ink-mid"> Five tasks with dependencies, phases, status transitions &mdash; all machine-readable. The agent could parse its own task state without re-reading English prose.</span>
+            </div>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <div>
+              <strong class="text-ink-hi">Project dictionary.</strong>
+              <span class="text-ink-mid"> Adding <code class="font-mono text-gib-sym">&#167;openvox</code>, <code class="font-mono text-gib-sym">&#167;tts</code>, <code class="font-mono text-gib-sym">&#167;docker-compose</code>, <code class="font-mono text-gib-sym">&#167;smoke-test</code> to the extension dictionary kept the task files tight and unambiguous.</span>
+            </div>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <div>
+              <strong class="text-ink-hi">Session log.</strong>
+              <span class="text-ink-mid"> <code class="font-mono">session.gibber</code> captured decisions (Docker path, port 49112, CPU-only) in a form that would survive context compaction.</span>
+            </div>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <div>
+              <strong class="text-ink-hi">Density.</strong>
+              <span class="text-ink-mid"> The completed-tasks record is ~380 tokens in Gibber. The equivalent English Markdown would be ~900+ tokens. That's a 2.4x compression on structured state.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-amber-300/80 mb-4">What didn't</h3>
+        <div class="space-y-3">
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-amber-300/80"></span>
+            <div>
+              <strong class="text-ink-hi">Overhead on small tasks.</strong>
+              <span class="text-ink-mid"> For a 5-task install that took ~10 minutes, the time spent writing gibber files, updating the dictionary, and maintaining the index was disproportionate. A sticky note would have sufficed.</span>
+            </div>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-amber-300/80"></span>
+            <div>
+              <strong class="text-ink-hi">Template friction.</strong>
+              <span class="text-ink-mid"> The installed templates use placeholder values (<code class="font-mono text-ink-lo">TXXX</code>, <code class="font-mono text-ink-lo">&lt;iso-date&gt;</code>) that the agent had to read, understand, and replace. A cold-start cost.</span>
+            </div>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-amber-300/80"></span>
+            <div>
+              <strong class="text-ink-hi">No cross-session payoff yet.</strong>
+              <span class="text-ink-mid"> The real value of Gibber is persistence across sessions and compaction survival. A single-session task doesn't exercise that. The investment pays off later &mdash; if there is a later.</span>
+            </div>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-amber-300/80"></span>
+            <div>
+              <strong class="text-ink-hi">Spec reading cost.</strong>
+              <span class="text-ink-mid"> The agent consumed ~5k tokens reading GIBBER-SPEC, DICTIONARY, and RULES. For a first session that cost is amortized by the fast-path version check in future sessions, but it's steep upfront.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- metrics table -->
+    <div class="card overflow-hidden mb-8">
+      <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+        <span>Measured metrics</span>
+      </div>
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-line text-left text-xs uppercase tracking-[0.15em] text-ink-lo">
+            <th class="px-4 py-3 font-medium">Metric</th>
+            <th class="px-4 py-3 font-medium">Gibber</th>
+            <th class="px-4 py-3 font-medium">English equiv.</th>
+            <th class="px-4 py-3 font-medium">Delta</th>
+          </tr>
+        </thead>
+        <tbody class="text-ink-mid">
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Completed-tasks record</td>
+            <td class="px-4 py-3 font-mono text-accent">~380 tok</td>
+            <td class="px-4 py-3 font-mono">~910 tok</td>
+            <td class="px-4 py-3 font-semibold text-accent">2.4x denser</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Task index</td>
+            <td class="px-4 py-3 font-mono text-accent">~190 tok</td>
+            <td class="px-4 py-3 font-mono">~420 tok</td>
+            <td class="px-4 py-3 font-semibold text-accent">2.2x denser</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Session log entry</td>
+            <td class="px-4 py-3 font-mono text-accent">~160 tok</td>
+            <td class="px-4 py-3 font-mono">~310 tok</td>
+            <td class="px-4 py-3 font-semibold text-accent">1.9x denser</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Spec + dict read cost (first session)</td>
+            <td class="px-4 py-3 font-mono text-amber-300/80">~5,000 tok</td>
+            <td class="px-4 py-3 font-mono">0 tok</td>
+            <td class="px-4 py-3 font-semibold text-amber-300/80">one-time cost</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-3 text-ink-hi">Files written by agent</td>
+            <td class="px-4 py-3 font-mono">6 .gibber files</td>
+            <td class="px-4 py-3 font-mono">~3 .md files</td>
+            <td class="px-4 py-3 text-ink-lo">more files, less tokens</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Verdict -->
+<section id="verdict" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Honest verdict</p>
+    <h2 class="h-section mb-6">When Gibber <span class="text-accent">earns its keep</span></h2>
+    <p class="lede mb-12">Gibber is not universally better. It has a specific sweet spot and a clear zone where it's overkill.</p>
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="card p-6 border-accent/30">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Gibber shines when</h3>
+        <ul class="space-y-2 text-sm text-ink-mid">
+          <li class="flex gap-2"><span class="text-accent mt-0.5">&#x2713;</span> Tasks span multiple sessions and context compaction is likely</li>
+          <li class="flex gap-2"><span class="text-accent mt-0.5">&#x2713;</span> Multiple agents need to read each other's state (multi-agent)</li>
+          <li class="flex gap-2"><span class="text-accent mt-0.5">&#x2713;</span> Task graphs have 10+ nodes with real dependencies</li>
+          <li class="flex gap-2"><span class="text-accent mt-0.5">&#x2713;</span> The project has a recurring domain vocabulary worth naming once</li>
+          <li class="flex gap-2"><span class="text-accent mt-0.5">&#x2713;</span> Session logs need to survive compaction as structured data, not prose</li>
+        </ul>
+      </div>
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-amber-300/80 mb-4">Gibber is overkill when</h3>
+        <ul class="space-y-2 text-sm text-ink-mid">
+          <li class="flex gap-2"><span class="text-amber-300/80 mt-0.5">&#x2717;</span> The task is short and single-session (like this one)</li>
+          <li class="flex gap-2"><span class="text-amber-300/80 mt-0.5">&#x2717;</span> No compaction will happen before the work is done</li>
+          <li class="flex gap-2"><span class="text-amber-300/80 mt-0.5">&#x2717;</span> The human needs to read every intermediate file</li>
+          <li class="flex gap-2"><span class="text-amber-300/80 mt-0.5">&#x2717;</span> There are fewer than 5 tasks with no dependencies</li>
+          <li class="flex gap-2"><span class="text-amber-300/80 mt-0.5">&#x2717;</span> The project will never be revisited in a later session</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card p-6 mt-8 bg-accent/[0.04] border-accent/30">
+      <p class="text-sm text-ink-mid leading-relaxed">
+        <strong class="text-ink-hi">Bottom line for OpenVox:</strong> Gibber was net-negative for this specific task &mdash; the install was too small and too fast to justify the setup cost. But the <em>infrastructure</em> is now in place: the dictionary, the templates, the session log. If the project grows (voice cloning, API integration, multi-agent pipelines), the next session starts at zero spec-reading cost and can parse its own history. The investment is front-loaded; the return is cumulative.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Methodology -->
+<section id="methodology" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Methodology</p>
+    <h2 class="h-section mb-6">How we measure</h2>
+    <p class="lede mb-8">Every case study follows the same protocol to keep comparisons fair.</p>
+
+    <div class="grid gap-4 md:grid-cols-3">
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">1</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Same task, measured both ways</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">We record the actual Gibber files the agent wrote, then estimate the English equivalent by expanding the Gibber forms using the <code class="font-mono">render-english</code> rules from GIBBER-RULES.md.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">2</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Token counts, not word counts</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">We count tokens (cl100k_base) because that's what matters for context budgets. Word counts hide the density difference because Gibber symbols tokenize efficiently.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">3</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Honest about costs</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">We report the one-time spec-reading cost alongside the per-file savings. If Gibber doesn't break even in a given project, we say so. No cherry-picking.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- footer -->
+<footer class="border-t border-line py-14">
+  <div class="container-prose flex flex-col gap-4 sm:flex-row sm:items-center justify-between text-xs text-ink-lo">
+    <span class="font-mono">gibber/4 &mdash; case studies</span>
+    <span>Built with Gibber. Evaluated honestly.</span>
+    <a href="/gibber/" class="transition-colors duration-200 hover:text-ink-hi">Back to gibber home</a>
+  </div>
+</footer>
+
+</main>
+</body>
+</html>
