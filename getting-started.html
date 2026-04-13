@@ -39,7 +39,7 @@
   </div>
 </nav>
 <div class="flex items-center gap-3">
-  <button onclick="document.getElementById('gibber-search').classList.remove('hidden');document.getElementById('gibber-search-input').focus();" class="flex items-center gap-2 rounded-lg border border-line bg-bg-raised/50 px-4 py-2 text-sm text-ink-lo hover:text-ink-mid hover:border-ink-lo/40 transition-colors cursor-text min-w-[200px]">
+  <button onclick="document.getElementById('gibber-search').style.display='block';document.getElementById('gibber-search-input').focus();" class="flex items-center gap-2 rounded-lg border border-line bg-bg-raised/50 px-4 py-2 text-sm text-ink-lo hover:text-ink-mid hover:border-ink-lo/40 transition-colors cursor-text min-w-[200px]">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 opacity-50"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
     <span class="flex-1 text-left">Search docs...</span>
     <kbd class="rounded border border-line bg-bg-raised px-1.5 py-0.5 text-[10px] font-mono text-ink-lo/60">&#8984;K</kbd>
@@ -50,20 +50,22 @@
   <a href="/gibber/getting-started.html" class="btn-ghost !py-1.5 !text-xs hidden sm:inline-flex">Get started</a>
 </div>
 </div>
-<div id="gibber-search" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onclick="if(event.target===this)this.classList.add('hidden')">
-  <div class="mx-auto mt-20 max-w-xl rounded-xl border border-line bg-bg-base shadow-2xl">
-    <div class="flex items-center gap-3 border-b border-line px-4 py-3">
+
+</header>
+<div id="gibber-search" class="fixed inset-0 z-50" style="display:none;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px)" onclick="if(event.target===this)this.style.display='none'">
+  <div style="margin:80px auto 0;max-width:36rem;border-radius:12px;border:1px solid var(--color-line,#333);background:var(--color-bg-base,#111);box-shadow:0 25px 50px -12px rgba(0,0,0,0.5)">
+    <div style="display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--color-line,#333);padding:12px 16px">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-ink-lo shrink-0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
       <input id="gibber-search-input" type="text" placeholder="Search documentation..." class="flex-1 bg-transparent text-sm text-ink-hi placeholder-ink-lo outline-none" onkeyup="gibberSearch(this.value)"/>
-      <kbd class="rounded border border-line bg-bg-raised px-1.5 py-0.5 text-[10px] font-mono text-ink-lo cursor-pointer" onclick="document.getElementById('gibber-search').classList.add('hidden')">ESC</kbd>
+      <kbd class="rounded border border-line bg-bg-raised px-1.5 py-0.5 text-[10px] font-mono text-ink-lo cursor-pointer" onclick="document.getElementById('gibber-search').style.display='none'">ESC</kbd>
     </div>
-    <div id="gibber-search-results" class="max-h-80 overflow-y-auto p-2">
+    <div id="gibber-search-results" style="max-height:320px;overflow-y:auto;padding:8px">
       <div class="px-3 py-6 text-center text-xs text-ink-lo">Type to search across all Gibber docs</div>
     </div>
   </div>
 </div>
 <script>
-document.addEventListener('keydown',function(e){if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();document.getElementById('gibber-search').classList.toggle('hidden');document.getElementById('gibber-search-input').focus();}if(e.key==='Escape')document.getElementById('gibber-search').classList.add('hidden');});
+document.addEventListener('keydown',function(e){if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();var s=document.getElementById('gibber-search');s.style.display=s.style.display==='block'?'none':'block';document.getElementById('gibber-search-input').focus();}if(e.key==='Escape')document.getElementById('gibber-search').style.display='none';});
 var gibberPages=[
 {title:'Getting Started',url:'/gibber/getting-started.html',desc:'Install, first file, templates, project setup'},
 {title:'Specification',url:'/gibber/spec.html',desc:'Grammar, file model, built-in functions, validation'},
@@ -75,7 +77,6 @@ var gibberPages=[
 ];
 function gibberSearch(q){var r=document.getElementById('gibber-search-results');if(!q.trim()){r.innerHTML='<div class="px-3 py-6 text-center text-xs text-ink-lo">Type to search across all Gibber docs</div>';return;}var lq=q.toLowerCase(),hits=gibberPages.filter(function(p){return p.title.toLowerCase().includes(lq)||p.desc.toLowerCase().includes(lq);});if(!hits.length){r.innerHTML='<div class="px-3 py-6 text-center text-xs text-ink-lo">No results for &ldquo;'+q+'&rdquo;</div>';return;}r.innerHTML=hits.map(function(p){return '<a href="'+p.url+'" class="block rounded-lg px-3 py-3 hover:bg-white/5 transition-colors"><div class="text-sm font-medium text-ink-hi">'+p.title+'</div><div class="text-xs text-ink-lo mt-0.5">'+p.desc+'</div></a>';}).join('');}
 </script>
-</header>
 <main>
 
 <!-- hero -->
