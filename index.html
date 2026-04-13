@@ -35,10 +35,10 @@
 <!-- right side: search + github + CTA -->
 <div class="flex items-center gap-3">
   <!-- search button -->
-  <button onclick="document.getElementById('gibber-search').classList.toggle('hidden');document.getElementById('gibber-search-input').focus();" class="flex items-center gap-2 rounded-md border border-line px-3 py-1.5 text-xs text-ink-lo hover:text-ink-mid hover:border-ink-lo/30 transition-colors">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-    <span class="hidden sm:inline">Search</span>
-    <kbd class="hidden sm:inline rounded border border-line bg-bg-raised px-1.5 py-0.5 text-[10px] font-mono text-ink-lo">K</kbd>
+  <button onclick="document.getElementById('gibber-search').classList.remove('hidden');document.getElementById('gibber-search-input').focus();" class="flex items-center gap-2 rounded-lg border border-line bg-bg-raised/50 px-4 py-2 text-sm text-ink-lo hover:text-ink-mid hover:border-ink-lo/40 transition-colors cursor-text min-w-[200px]">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 opacity-50"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <span class="flex-1 text-left">Search docs...</span>
+    <kbd class="rounded border border-line bg-bg-raised px-1.5 py-0.5 text-[10px] font-mono text-ink-lo/60">&#8984;K</kbd>
   </button>
   <!-- github -->
   <a href="https://github.com/dzineer/gibber" target="_blank" rel="noopener" class="text-ink-lo hover:text-ink-hi transition-colors" aria-label="GitHub">
