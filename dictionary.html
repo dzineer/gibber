@@ -21,21 +21,69 @@
 
 <!-- header -->
 <header class="sticky top-0 z-40 border-b border-line/80 bg-bg-base/70 backdrop-blur-md">
-  <div class="container-prose flex h-14 items-center justify-between gap-6">
-    <a href="/gibber/" class="flex items-center gap-2 font-mono text-sm font-semibold text-ink-hi">
-      <span class="inline-block h-2 w-2 rounded-full bg-accent" aria-hidden="true"></span>gibber<span class="font-normal text-ink-lo">/dictionary</span>
-    </a>
-    <nav class="hidden items-center gap-6 text-xs text-ink-mid md:flex">
-      <a href="/gibber/" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Home</a>
-      <a href="#forms" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Forms</a>
-      <a href="#status" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Status</a>
-      <a href="#verbs" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Verbs</a>
-      <a href="#task-fields" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Fields</a>
-      <a href="#metrics" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Metrics</a>
-      <a href="#verification" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Verification</a>
-    </nav>
-    <a href="/gibber/#use" class="btn-ghost !py-1.5 !text-xs">Get started</a>
+<div class="container-prose flex h-14 items-center justify-between gap-4">
+<a href="/gibber/" class="flex items-center gap-2 font-mono text-sm font-semibold text-ink-hi shrink-0">
+  <span class="inline-block h-2 w-2 rounded-full bg-accent" aria-hidden="true"></span>gibber<span class="font-normal text-ink-lo">/v3</span>
+</a>
+<nav class="hidden items-center gap-1 text-xs text-ink-mid md:flex">
+  <div class="relative group">
+    <button class="px-3 py-2 rounded-md hover:text-ink-hi hover:bg-white/5 transition-colors font-medium">Docs</button>
+    <div class="absolute left-0 top-full pt-1 hidden group-hover:block z-50">
+      <div class="rounded-lg border border-line bg-bg-base shadow-xl py-2 min-w-[180px]">
+        <a href="/gibber/getting-started.html" class="block px-4 py-2 text-ink-mid hover:text-ink-hi hover:bg-white/5 transition-colors">Getting Started</a>
+        <a href="/gibber/spec.html" class="block px-4 py-2 text-ink-mid hover:text-ink-hi hover:bg-white/5 transition-colors">Specification</a>
+        <a href="/gibber/dictionary.html" class="block px-4 py-2 text-ink-mid hover:text-ink-hi hover:bg-white/5 transition-colors">Dictionary</a>
+        <a href="/gibber/tools.html" class="block px-4 py-2 text-ink-mid hover:text-ink-hi hover:bg-white/5 transition-colors">Tools</a>
+      </div>
+    </div>
   </div>
+  <div class="relative group">
+    <button class="px-3 py-2 rounded-md hover:text-ink-hi hover:bg-white/5 transition-colors font-medium">Research</button>
+    <div class="absolute left-0 top-full pt-1 hidden group-hover:block z-50">
+      <div class="rounded-lg border border-line bg-bg-base shadow-xl py-2 min-w-[180px]">
+        <a href="/gibber/case-studies.html" class="block px-4 py-2 text-ink-mid hover:text-ink-hi hover:bg-white/5 transition-colors">Case Studies</a>
+        <a href="/gibber/white-paper.html" class="block px-4 py-2 text-ink-mid hover:text-ink-hi hover:bg-white/5 transition-colors">White Paper</a>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="flex items-center gap-3">
+  <button onclick="document.getElementById('gibber-search').classList.toggle('hidden');document.getElementById('gibber-search-input').focus();" class="flex items-center gap-2 rounded-md border border-line px-3 py-1.5 text-xs text-ink-lo hover:text-ink-mid hover:border-ink-lo/30 transition-colors">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <span class="hidden sm:inline">Search</span>
+    <kbd class="hidden sm:inline rounded border border-line bg-bg-raised px-1.5 py-0.5 text-[10px] font-mono text-ink-lo">K</kbd>
+  </button>
+  <a href="https://github.com/dzineer/gibber" target="_blank" rel="noopener" class="text-ink-lo hover:text-ink-hi transition-colors" aria-label="GitHub">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+  </a>
+  <a href="/gibber/getting-started.html" class="btn-ghost !py-1.5 !text-xs hidden sm:inline-flex">Get started</a>
+</div>
+</div>
+<div id="gibber-search" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onclick="if(event.target===this)this.classList.add('hidden')">
+  <div class="mx-auto mt-20 max-w-xl rounded-xl border border-line bg-bg-base shadow-2xl">
+    <div class="flex items-center gap-3 border-b border-line px-4 py-3">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-ink-lo shrink-0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="gibber-search-input" type="text" placeholder="Search documentation..." class="flex-1 bg-transparent text-sm text-ink-hi placeholder-ink-lo outline-none" onkeyup="gibberSearch(this.value)"/>
+      <kbd class="rounded border border-line bg-bg-raised px-1.5 py-0.5 text-[10px] font-mono text-ink-lo cursor-pointer" onclick="document.getElementById('gibber-search').classList.add('hidden')">ESC</kbd>
+    </div>
+    <div id="gibber-search-results" class="max-h-80 overflow-y-auto p-2">
+      <div class="px-3 py-6 text-center text-xs text-ink-lo">Type to search across all Gibber docs</div>
+    </div>
+  </div>
+</div>
+<script>
+document.addEventListener('keydown',function(e){if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();document.getElementById('gibber-search').classList.toggle('hidden');document.getElementById('gibber-search-input').focus();}if(e.key==='Escape')document.getElementById('gibber-search').classList.add('hidden');});
+var gibberPages=[
+{title:'Getting Started',url:'/gibber/getting-started.html',desc:'Install, first file, templates, project setup'},
+{title:'Specification',url:'/gibber/spec.html',desc:'Grammar, file model, built-in functions, validation'},
+{title:'Symbol Dictionary',url:'/gibber/dictionary.html',desc:'All symbols in the standard vocabulary'},
+{title:'Gibber Tools',url:'/gibber/tools.html',desc:'CLI compression, gibber-run, rule files'},
+{title:'Case Studies',url:'/gibber/case-studies.html',desc:'Real-world evaluations with metrics'},
+{title:'White Paper',url:'/gibber/white-paper.html',desc:'The Jibber Protocol — deterministic AI communication'},
+{title:'Home',url:'/gibber/',desc:'Overview, demo, comparison, FAQ'}
+];
+function gibberSearch(q){var r=document.getElementById('gibber-search-results');if(!q.trim()){r.innerHTML='<div class="px-3 py-6 text-center text-xs text-ink-lo">Type to search across all Gibber docs</div>';return;}var lq=q.toLowerCase(),hits=gibberPages.filter(function(p){return p.title.toLowerCase().includes(lq)||p.desc.toLowerCase().includes(lq);});if(!hits.length){r.innerHTML='<div class="px-3 py-6 text-center text-xs text-ink-lo">No results for &ldquo;'+q+'&rdquo;</div>';return;}r.innerHTML=hits.map(function(p){return '<a href="'+p.url+'" class="block rounded-lg px-3 py-3 hover:bg-white/5 transition-colors"><div class="text-sm font-medium text-ink-hi">'+p.title+'</div><div class="text-xs text-ink-lo mt-0.5">'+p.desc+'</div></a>';}).join('');}
+</script>
 </header>
 
 <main>
