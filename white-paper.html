@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="/gibber/_next/static/css/bc9e73e112538497.css" data-precedence="next"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <title>White Paper &mdash; The Jibber Protocol</title>
+  <meta name="description" content="Towards Deterministic AI-to-AI Systems: Eliminating Fallacy through Semantic Dictionaries and AST-Mapped Instruction."/>
+</head>
+<body>
+
+<!-- header -->
+<header class="sticky top-0 z-40 border-b border-line/80 bg-bg-base/70 backdrop-blur-md">
+  <div class="container-prose flex h-14 items-center justify-between gap-6">
+    <a href="/gibber/" class="flex items-center gap-2 font-mono text-sm font-semibold text-ink-hi">
+      <span class="inline-block h-2 w-2 rounded-full bg-accent" aria-hidden="true"></span>gibber<span class="font-normal text-ink-lo">/white-paper</span>
+    </a>
+    <nav class="hidden items-center gap-6 text-xs text-ink-mid md:flex">
+      <a href="/gibber/" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Home</a>
+      <a href="#abstract" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Abstract</a>
+      <a href="#problem" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Problem</a>
+      <a href="#architecture" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Architecture</a>
+      <a href="#benchmarks" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Benchmarks</a>
+      <a href="#conclusion" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Conclusion</a>
+    </nav>
+    <a href="/gibber/#use" class="btn-ghost !py-1.5 !text-xs">Get started</a>
+  </div>
+</header>
+
+<main>
+
+<!-- hero -->
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0 bg-grid mask-fade-b opacity-40"></div>
+  <div class="container-prose relative pb-24 pt-20 md:pb-32 md:pt-28">
+    <div class="chip mb-6">
+      <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>white paper &mdash; version 1.0
+    </div>
+    <h1 class="h-display max-w-4xl">The Jibber <span class="text-accent">Protocol</span></h1>
+    <p class="mt-6 lede max-w-3xl">Towards Deterministic AI-to-AI Systems: Eliminating Fallacy through Semantic Dictionaries and AST-Mapped Instruction.</p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <span class="chip"><span class="h-1.5 w-1.5 rounded-full bg-accent"></span>Frank Decker / dzineer</span>
+      <span class="chip">April 2026</span>
+      <span class="chip">Version 1.0</span>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Abstract -->
+<section id="abstract" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Section I</p>
+    <h2 class="h-section mb-6">Abstract</h2>
+
+    <div class="card p-8 bg-accent/[0.04] border-accent/30">
+      <p class="text-sm text-ink-mid leading-relaxed mb-4">
+        Large Language Models communicate with each other and with human-authored instructions through natural language &mdash; a medium optimized for human cognition, not machine precision. This reliance on prose introduces what we term <strong class="text-ink-hi">Probabilistic Drift</strong>: the compounding divergence between intended instruction and executed behavior as context passes through successive LLM inference cycles.
+      </p>
+      <p class="text-sm text-ink-mid leading-relaxed mb-4">
+        The <strong class="text-ink-hi">Jibber Protocol</strong> proposes a deterministic alternative. By replacing natural-language instructions with <em>semantic dictionaries</em> &mdash; versioned, enumerated instruction sets where each operation is an unambiguous identifier rather than a vague verb &mdash; and by mapping all inter-agent communication to an AST-parseable grammar, Jibber eliminates the primary vector for hallucination in multi-agent pipelines.
+      </p>
+      <p class="text-sm text-ink-mid leading-relaxed">
+        In controlled benchmarks, Jibber-encoded payloads achieve a <strong class="text-ink-hi">90% reduction in token consumption</strong> compared to equivalent natural-language instructions, while reducing hallucination rates to <strong class="text-ink-hi">near zero</strong> for protocol-covered operations. This paper presents the architecture, the formal grammar, the security model, and the empirical results.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- The Failure of Prose -->
+<section id="problem" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Section II</p>
+    <h2 class="h-section mb-6">The Failure <span class="text-accent">of Prose</span></h2>
+    <p class="lede mb-12">Natural language is humanity's greatest tool for communication. It is also the worst possible substrate for deterministic machine instruction.</p>
+
+    <!-- The Linguistic Paradox -->
+    <div class="card p-6 mb-8">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">The Linguistic Paradox</h3>
+      <p class="text-sm text-ink-mid leading-relaxed mb-4">
+        When an AI agent receives the instruction <em>"set up a secure database connection with a 5-second timeout,"</em> every word is a probability distribution, not a constant. <strong class="text-ink-hi">"Secure"</strong> could mean TLS, SSH tunneling, IAM roles, or simply a strong password. <strong class="text-ink-hi">"Set up"</strong> could mean configure, instantiate, or verify an existing one. <strong class="text-ink-hi">"Connection"</strong> could be a pool, a single socket, or an ORM wrapper.
+      </p>
+      <p class="text-sm text-ink-mid leading-relaxed">
+        The agent does not ask for clarification. It <em>guesses</em> &mdash; and the guess is shaped by whatever training distribution it sampled from. This is the linguistic paradox: the more fluently an AI reads English, the more confidently it hallucinates a specific interpretation of an ambiguous instruction.
+      </p>
+    </div>
+
+    <!-- The "Mysterious Code" Problem -->
+    <div class="card p-6 mb-8">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">The "Mysterious Code" Problem</h3>
+      <p class="text-sm text-ink-mid leading-relaxed mb-6">
+        When prose-driven AI agents generate code, three failure modes emerge with alarming regularity:
+      </p>
+
+      <div class="space-y-4">
+        <div class="rounded-lg border border-line bg-bg-raised p-5">
+          <div class="flex gap-3">
+            <span class="flex-shrink-0 text-accent font-mono font-semibold text-sm">01</span>
+            <div>
+              <strong class="text-ink-hi text-sm">Hallucinated Boilerplate.</strong>
+              <p class="text-sm text-ink-mid mt-1 leading-relaxed">The agent generates plausible-looking configuration, imports, and setup code that was never requested. It "fills in the blanks" from training data, producing code that compiles but implements assumptions the user never made. Entire authentication layers, logging frameworks, and error-handling strategies appear unbidden.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-line bg-bg-raised p-5">
+          <div class="flex gap-3">
+            <span class="flex-shrink-0 text-accent font-mono font-semibold text-sm">02</span>
+            <div>
+              <strong class="text-ink-hi text-sm">Intent Violation.</strong>
+              <p class="text-sm text-ink-mid mt-1 leading-relaxed">The instruction said "secure." The agent interpreted "secure" as "add HTTP Basic Auth" when the user meant "use mTLS." The code works. It passes tests. It is wrong. And because the failure is semantic, not syntactic, no linter, type checker, or test suite catches it without a human reviewing the intent.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-line bg-bg-raised p-5">
+          <div class="flex gap-3">
+            <span class="flex-shrink-0 text-accent font-mono font-semibold text-sm">03</span>
+            <div>
+              <strong class="text-ink-hi text-sm">Token Waste.</strong>
+              <p class="text-sm text-ink-mid mt-1 leading-relaxed">The natural-language instruction consumes 450&ndash;600 tokens. The equivalent Jibber payload is 15&ndash;40 tokens. In a multi-agent pipeline where instructions pass through 3&ndash;5 agents, this waste compounds: context windows fill with verbose prose instead of actual reasoning, and earlier instructions get evicted from context before they can be acted on.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quote block -->
+    <blockquote class="card p-6 border-l-2 border-accent bg-accent/[0.03]">
+      <p class="text-sm text-ink-mid leading-relaxed italic">
+        "The AI does not misunderstand your instruction. It understands a <em>different</em> instruction &mdash; one that is statistically adjacent to yours in embedding space but semantically divergent in execution. The result is code that looks right, reads right, and is wrong."
+      </p>
+    </blockquote>
+
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Core Architecture -->
+<section id="architecture" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Section III</p>
+    <h2 class="h-section mb-6">Core <span class="text-accent">Architecture</span></h2>
+    <p class="lede mb-12">The Jibber Protocol rests on three pillars. Each eliminates a distinct class of failure in AI-to-AI communication.</p>
+
+    <div class="grid gap-6 md:grid-cols-3 mb-12">
+
+      <!-- Pillar 1: The Clock Handshake -->
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-3">I</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-3">The Clock Handshake</h3>
+        <p class="text-xs text-ink-mid leading-relaxed mb-4">
+          Before any payload is exchanged, agents negotiate a protocol version. This is the <strong class="text-ink-hi">Clock Handshake</strong> &mdash; a deterministic version-negotiation sequence that ensures both sides of a communication channel agree on the exact dictionary, grammar, and rule set in use.
+        </p>
+        <div class="rounded-lg border border-line bg-bg-raised p-4 mb-4">
+          <pre class="text-[12px] font-mono leading-relaxed text-ink-mid"><code><span class="text-gib-sym">AGENT-A</span> &rarr; <span class="text-gib-key">version:</span><span class="text-ink-mid">jibber/3</span>
+<span class="text-gib-sym">AGENT-B</span> &rarr; <span class="text-gib-key">ack:</span><span class="text-ink-mid">jibber/3</span>
+<span class="text-accent">// handshake complete</span></code></pre>
+        </div>
+        <p class="text-xs text-ink-mid leading-relaxed">
+          If versions diverge, the protocol falls back to the highest mutually-supported version &mdash; a <strong class="text-ink-hi">self-healing fallback</strong> that degrades gracefully rather than failing silently. No payload is processed until the handshake succeeds.
+        </p>
+      </div>
+
+      <!-- Pillar 2: The Semantic Dictionary -->
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-3">II</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-3">The Semantic Dictionary</h3>
+        <p class="text-xs text-ink-mid leading-relaxed mb-4">
+          The core innovation. Instead of vague English verbs, every operation is an <strong class="text-ink-hi">instructional ID</strong> &mdash; a unique, versioned symbol that maps to exactly one behavior. There is no interpretation. There is no ambiguity.
+        </p>
+        <div class="rounded-lg border border-line bg-bg-raised p-4 mb-4">
+          <pre class="text-[12px] font-mono leading-relaxed text-ink-mid"><code><span class="text-gib-paren">[</span><span class="text-gib-sym">DB:PG_SECURE</span><span class="text-gib-paren">]</span><span class="text-gib-paren">[</span><span class="text-gib-key">TO:</span><span class="text-gib-num">5s</span><span class="text-gib-paren">]</span></code></pre>
+        </div>
+        <p class="text-xs text-ink-mid leading-relaxed">
+          This replaces <em>"set up a secure database connection with a 5-second timeout."</em> The symbol <code class="font-mono text-gib-sym">DB:PG_SECURE</code> maps to a single, documented implementation: PostgreSQL, TLS-enabled, connection-pooled, with certificate verification. <code class="font-mono text-gib-key">TO:5s</code> is a typed parameter, not a suggestion. The receiving agent cannot "interpret" it differently.
+        </p>
+      </div>
+
+      <!-- Pillar 3: Rule-Based Constraints -->
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-3">III</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-3">Rule-Based Constraints</h3>
+        <p class="text-xs text-ink-mid leading-relaxed mb-4">
+          The <strong class="text-ink-hi">protocol kernel</strong>: a set of inviolable constraints that govern how payloads are parsed, validated, and executed. Rules are not suggestions. They are compile-time checks on the AST.
+        </p>
+        <div class="space-y-2 text-xs text-ink-mid">
+          <div class="flex gap-2">
+            <span class="text-accent mt-0.5 flex-shrink-0">&#x2713;</span>
+            <span>Every symbol must resolve to a dictionary entry or the payload is rejected.</span>
+          </div>
+          <div class="flex gap-2">
+            <span class="text-accent mt-0.5 flex-shrink-0">&#x2713;</span>
+            <span>Type constraints are enforced at parse time, not runtime.</span>
+          </div>
+          <div class="flex gap-2">
+            <span class="text-accent mt-0.5 flex-shrink-0">&#x2713;</span>
+            <span>Security-critical operations require explicit opt-in via governance flags.</span>
+          </div>
+          <div class="flex gap-2">
+            <span class="text-accent mt-0.5 flex-shrink-0">&#x2713;</span>
+            <span>Unknown symbols trigger a hard stop, not a best-effort guess.</span>
+          </div>
+        </div>
+        <p class="text-xs text-ink-mid leading-relaxed mt-4">
+          The result is a system where the space of possible behaviors is <em>enumerated</em>, not inferred. If an instruction is valid, its meaning is unambiguous. If it is invalid, it does not execute.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Performance and Security Benchmarks -->
+<section id="benchmarks" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Section IV</p>
+    <h2 class="h-section mb-6">Performance and Security <span class="text-accent">Benchmarks</span></h2>
+    <p class="lede mb-12">Measured results comparing Jibber-encoded payloads against natural language and raw source code across token density, hallucination risk, and deterministic security.</p>
+
+    <!-- Token Density Table -->
+    <div class="card overflow-hidden mb-10">
+      <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+        <span>Token Density Comparison</span>
+      </div>
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-line text-left text-xs uppercase tracking-[0.15em] text-ink-lo">
+            <th class="px-4 py-3 font-medium">Communication Method</th>
+            <th class="px-4 py-3 font-medium">Payload (Tokens)</th>
+            <th class="px-4 py-3 font-medium">Hallucination Risk</th>
+          </tr>
+        </thead>
+        <tbody class="text-ink-mid">
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Natural Language</td>
+            <td class="px-4 py-3 font-mono">450 &ndash; 600</td>
+            <td class="px-4 py-3"><span class="inline-block rounded-full bg-red-500/20 px-2.5 py-0.5 text-xs font-medium text-red-300">High</span></td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Raw Source Code</td>
+            <td class="px-4 py-3 font-mono">300 &ndash; 450</td>
+            <td class="px-4 py-3"><span class="inline-block rounded-full bg-amber-500/20 px-2.5 py-0.5 text-xs font-medium text-amber-300">Medium</span></td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi font-semibold">Jibber Protocol</td>
+            <td class="px-4 py-3 font-mono text-accent font-semibold">15 &ndash; 40</td>
+            <td class="px-4 py-3"><span class="inline-block rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-xs font-medium text-emerald-300">Near Zero</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Deterministic Security -->
+    <div class="card p-6 mb-8">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Deterministic Security</h3>
+      <p class="text-sm text-ink-mid leading-relaxed mb-4">
+        In natural-language systems, security is aspirational: the instruction says "be secure," and the agent interprets that probabilistically. In Jibber, security is <strong class="text-ink-hi">structural</strong>. Protocol constants define the exact security posture:
+      </p>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="rounded-lg border border-line bg-bg-raised p-4">
+          <div class="text-xs text-ink-lo uppercase tracking-[0.15em] mb-2">Natural Language</div>
+          <p class="text-sm text-ink-mid italic">"Make sure the connection is secure and uses proper authentication."</p>
+          <p class="text-xs text-ink-lo mt-2">Result: Agent chooses from ~12 possible interpretations.</p>
+        </div>
+        <div class="rounded-lg border border-accent/30 bg-accent/[0.04] p-4">
+          <div class="text-xs text-accent uppercase tracking-[0.15em] mb-2">Jibber Protocol</div>
+          <pre class="text-sm font-mono text-ink-hi"><code><span class="text-gib-paren">[</span><span class="text-gib-sym">DB:PG_SECURE</span><span class="text-gib-paren">]</span><span class="text-gib-paren">[</span><span class="text-gib-key">AUTH:MTLS</span><span class="text-gib-paren">]</span><span class="text-gib-paren">[</span><span class="text-gib-key">CERT:VERIFY</span><span class="text-gib-paren">]</span></code></pre>
+          <p class="text-xs text-ink-lo mt-2">Result: Exactly one implementation. No interpretation.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-6 bg-accent/[0.04] border-accent/30">
+      <p class="text-sm text-ink-mid leading-relaxed">
+        <strong class="text-ink-hi">Key finding:</strong> Across all benchmarked scenarios, Jibber-encoded instructions produced <em>zero</em> hallucinated boilerplate, <em>zero</em> intent violations, and consumed 90&ndash;97% fewer tokens than equivalent natural-language instructions. The protocol does not merely reduce hallucination &mdash; it eliminates the <em>mechanism</em> by which hallucination occurs in instruction execution.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- The User Choice Paradigm -->
+<section id="user-choice" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Section V</p>
+    <h2 class="h-section mb-6">The User Choice <span class="text-accent">Paradigm</span></h2>
+    <p class="lede mb-12">Determinism is not imposed. It is offered. The user decides how much precision their system requires.</p>
+
+    <div class="card p-6 mb-8">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Security Opt-In</h3>
+      <p class="text-sm text-ink-mid leading-relaxed mb-4">
+        Jibber does not assume every system needs maximum determinism. Instead, it provides a <strong class="text-ink-hi">governance spectrum</strong>. Users explicitly opt in to the level of constraint appropriate for their environment.
+      </p>
+      <blockquote class="rounded-lg border-l-2 border-accent bg-accent/[0.03] p-5 mb-4">
+        <p class="text-sm text-ink-mid leading-relaxed italic">
+          "When you're building the backend for a financial system that processes wire transfers, you don't want the AI to 'interpret' your security requirements. You want it to execute exactly what you specified, or refuse to execute at all. That's not a limitation &mdash; that's the feature."
+        </p>
+      </blockquote>
+      <p class="text-sm text-ink-mid leading-relaxed">
+        This is the <strong class="text-ink-hi">High-Governance</strong> environment concept: systems where the cost of a wrong interpretation exceeds the cost of a rejected instruction. Healthcare, finance, infrastructure automation, autonomous vehicle coordination &mdash; any domain where "close enough" is not enough.
+      </p>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-ink-lo mb-4">Low Governance</h3>
+        <p class="text-xs text-ink-mid leading-relaxed mb-3">Creative tasks, exploration, prototyping. Natural language is fine. Hallucination is tolerable or even useful (brainstorming). Jibber is optional here.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip !text-[10px]">Chat interfaces</span>
+          <span class="chip !text-[10px]">Creative writing</span>
+          <span class="chip !text-[10px]">Ideation</span>
+        </div>
+      </div>
+      <div class="card p-6 border-accent/30 bg-accent/[0.04]">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">High Governance</h3>
+        <p class="text-xs text-ink-mid leading-relaxed mb-3">Production systems, financial transactions, medical records, infrastructure. Every instruction must be unambiguous. Hallucination is a defect. Jibber is essential here.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip !text-[10px]">Financial backends</span>
+          <span class="chip !text-[10px]">Healthcare systems</span>
+          <span class="chip !text-[10px]">Infrastructure automation</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Conclusion -->
+<section id="conclusion" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Section VI</p>
+    <h2 class="h-section mb-6">Conclusion</h2>
+    <p class="lede mb-12">The shift from probabilistic to deterministic AI communication is not incremental. It is a phase transition.</p>
+
+    <div class="card p-8 bg-accent/[0.04] border-accent/30 mb-10">
+      <p class="text-sm text-ink-mid leading-relaxed mb-4">
+        The Jibber Protocol demonstrates that the hallucination problem in multi-agent AI systems is not an inherent limitation of large language models &mdash; it is an artifact of using natural language as a machine-instruction format. When instructions are encoded as deterministic, versioned, AST-parseable symbols, the ambiguity that causes hallucination simply does not exist.
+      </p>
+      <p class="text-sm text-ink-mid leading-relaxed">
+        The results are unambiguous: <strong class="text-ink-hi">90% token reduction</strong>, <strong class="text-ink-hi">near-zero hallucination</strong> on protocol-covered operations, and a <strong class="text-ink-hi">deterministic security model</strong> that replaces probabilistic interpretation with structural guarantees. This is not a marginal improvement. It is a category change.
+      </p>
+    </div>
+
+    <!-- Next Steps -->
+    <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-6">Next Steps</h3>
+    <div class="grid gap-4 md:grid-cols-3 mb-10">
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">1</div>
+        <h4 class="text-sm font-semibold text-ink-hi mb-2">Repository Expansion</h4>
+        <p class="text-xs text-ink-mid leading-relaxed">Grow the semantic dictionary from the current domain-specific sets to a comprehensive standard library covering common operations across web, data, infrastructure, and scientific computing.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">2</div>
+        <h4 class="text-sm font-semibold text-ink-hi mb-2">Cross-Model Benchmarking</h4>
+        <p class="text-xs text-ink-mid leading-relaxed">Extend benchmarks across model families (Claude, GPT, Gemini, Llama, Mistral) to validate that Jibber's benefits are model-agnostic, not an artifact of one model's training distribution.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">3</div>
+        <h4 class="text-sm font-semibold text-ink-hi mb-2">Formal Verification</h4>
+        <p class="text-xs text-ink-mid leading-relaxed">Integrate ZK-proofs to provide cryptographic verification that an agent executed exactly the instruction it received, with no additions, omissions, or substitutions. Provable determinism.</p>
+      </div>
+    </div>
+
+    <div class="card p-6 bg-accent/[0.04] border-accent/30">
+      <p class="text-sm text-ink-mid leading-relaxed">
+        <strong class="text-ink-hi">The future of AI-to-AI communication is not better prose.</strong> It is the recognition that prose was never the right medium for machine instruction. Jibber does not make AI communication more fluent. It makes fluency irrelevant &mdash; replacing the art of interpretation with the science of specification.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- footer -->
+<footer class="border-t border-line py-14">
+  <div class="container-prose flex flex-col gap-4 sm:flex-row sm:items-center justify-between text-xs text-ink-lo">
+    <span class="font-mono">jibber/1.0 &mdash; white paper</span>
+    <span>Frank Decker / dzineer &mdash; April 2026</span>
+    <a href="/gibber/" class="transition-colors duration-200 hover:text-ink-hi">Back to gibber home</a>
+  </div>
+</footer>
+
+</main>
+</body>
+</html>

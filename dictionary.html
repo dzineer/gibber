@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="/gibber/_next/static/css/bc9e73e112538497.css" data-precedence="next"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <title>Symbol Dictionary &mdash; Gibber</title>
+  <meta name="description" content="meta/v2 — every symbol in the standard Gibber vocabulary, defined in plain English."/>
+  <style>
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-lo, #6b7280); padding: 0.5rem 1rem; border-bottom: 1px solid var(--line, rgba(255,255,255,0.08)); }
+    td { font-size: 0.875rem; padding: 0.5rem 1rem; border-bottom: 1px solid var(--line, rgba(255,255,255,0.04)); color: var(--ink-mid, #9ca3af); }
+    td:first-child { white-space: nowrap; }
+    tr:last-child td { border-bottom: none; }
+  </style>
+</head>
+<body>
+
+<!-- header -->
+<header class="sticky top-0 z-40 border-b border-line/80 bg-bg-base/70 backdrop-blur-md">
+  <div class="container-prose flex h-14 items-center justify-between gap-6">
+    <a href="/gibber/" class="flex items-center gap-2 font-mono text-sm font-semibold text-ink-hi">
+      <span class="inline-block h-2 w-2 rounded-full bg-accent" aria-hidden="true"></span>gibber<span class="font-normal text-ink-lo">/dictionary</span>
+    </a>
+    <nav class="hidden items-center gap-6 text-xs text-ink-mid md:flex">
+      <a href="/gibber/" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Home</a>
+      <a href="#forms" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Forms</a>
+      <a href="#status" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Status</a>
+      <a href="#verbs" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Verbs</a>
+      <a href="#task-fields" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Fields</a>
+      <a href="#metrics" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Metrics</a>
+      <a href="#verification" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Verification</a>
+    </nav>
+    <a href="/gibber/#use" class="btn-ghost !py-1.5 !text-xs">Get started</a>
+  </div>
+</header>
+
+<main>
+
+<!-- hero -->
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0 bg-grid mask-fade-b opacity-40"></div>
+  <div class="container-prose relative pb-24 pt-20 md:pb-32 md:pt-28">
+    <div class="chip mb-6">
+      <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>meta/v2 &mdash; standard vocabulary
+    </div>
+    <h1 class="h-display max-w-4xl">Symbol <span class="text-accent">Dictionary</span></h1>
+    <p class="mt-6 lede">meta/v2 &mdash; every symbol in the standard Gibber vocabulary, defined in plain English.</p>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Top-level forms -->
+<section id="forms" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Category</p>
+    <h2 class="h-section mb-6">Top-level forms</h2>
+    <p class="lede mb-12">The seven root forms that define the shape of a Gibber file.</p>
+
+    <div class="card overflow-hidden">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&sect;task</code></td><td>A task: a unit of work with id, status, owner, goal, etc.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;index</code></td><td>An index of tasks. The shape of <code class="font-mono">tasks_index.md</code>.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;completed</code></td><td>A completed-tasks list. The shape of <code class="font-mono">tasks_completed.md</code>.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;learning</code></td><td>A learning entry: a failure, what was tried, the outcome, the lesson.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;session</code></td><td>A session log entry: a prompt and a response.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;memory</code></td><td>A memory dump: persistent context for cross-session recall.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;note</code></td><td>A free-form scratch note.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Identity and metadata -->
+<section id="identity" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Category</p>
+    <h2 class="h-section mb-6">Identity and metadata</h2>
+    <p class="lede mb-12">Fields that identify and timestamp entries.</p>
+
+    <div class="card overflow-hidden">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&sect;id</code></td><td>Unique identifier (e.g. <code class="font-mono">T042</code>, <code class="font-mono">L007</code>, <code class="font-mono">S123</code>).</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;title</code></td><td>Short human-readable title.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;created</code></td><td>Creation timestamp (ISO 8601).</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;updated</code></td><td>Last-update timestamp (ISO 8601).</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;version</code></td><td>Version of the file or entry.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;provenance</code></td><td>Where this came from (a source file, a prior task, an external doc).</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;since</code></td><td>When something started or became true.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;until</code></td><td>When something ended or stopped being true.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Status values -->
+<section id="status" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Category</p>
+    <h2 class="h-section mb-6">Status values</h2>
+    <p class="lede mb-12">The lifecycle states a task moves through.</p>
+
+    <div class="card overflow-hidden">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&sect;wip</code></td><td>Work in progress.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;queued</code></td><td>Queued, not yet started.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;blocked</code></td><td>Blocked on a dependency or external factor.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;verifying</code></td><td>Implementation done, currently being verified by an independent agent.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;verifying-failed</code></td><td>Verification rejected at least one claim; needs fix and re-verification.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;done</code></td><td>Completed and verified.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;abandoned</code></td><td>Stopped, will not be completed.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;deferred</code></td><td>Pushed to a later phase or version.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Owners -->
+<section id="owners" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Category</p>
+    <h2 class="h-section mb-6">Owners</h2>
+    <p class="lede mb-12">Who is responsible for the work.</p>
+
+    <div class="card overflow-hidden">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&sect;ai</code></td><td>The AI agent.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;human</code></td><td>The human user.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;pair</code></td><td>Joint work between AI and human.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;auto</code></td><td>Automated process (CI, hook, scheduled job).</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Verbs -->
+<section id="verbs" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Category</p>
+    <h2 class="h-section mb-6">Verbs</h2>
+    <p class="lede mb-12">The 22 action words that describe what the work is.</p>
+
+    <div class="card overflow-hidden">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&sect;build</code></td><td>Construct something new.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;design</code></td><td>Plan or specify.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;implement</code></td><td>Write the code.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;test</code></td><td>Add or run tests.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;bench</code></td><td>Add or run benchmarks.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;verify</code></td><td>Confirm correctness against a spec or invariant.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;refactor</code></td><td>Restructure existing code without changing behavior.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;port</code></td><td>Translate from one language or platform to another.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;migrate</code></td><td>Move data or schema from one form to another.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;integrate</code></td><td>Connect components together.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;document</code></td><td>Write or update documentation.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;spec</code></td><td>Define or update a specification.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;review</code></td><td>Inspect work for correctness, quality, or alignment.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;debug</code></td><td>Diagnose a problem.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;fix</code></td><td>Repair a defect.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;optimize</code></td><td>Improve performance or efficiency.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;install</code></td><td>Set something up so it can be used.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;remove</code></td><td>Delete or uninstall.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;rename</code></td><td>Change a name without changing meaning.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;extract</code></td><td>Pull a piece out of a larger whole.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;inline</code></td><td>Fold a piece back into a larger whole.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;generate</code></td><td>Produce automatically from a source.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Task fields -->
+<section id="task-fields" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Category</p>
+    <h2 class="h-section mb-6">Task fields</h2>
+    <p class="lede mb-12">Fields that describe the content and constraints of a task.</p>
+
+    <div class="card overflow-hidden">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&sect;goal</code></td><td>What the task aims to achieve.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;depends</code></td><td>Other task IDs this task depends on.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;blocks</code></td><td>Other task IDs this task is blocking.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;files</code></td><td>Files affected by this task.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;done</code></td><td>Subitems already completed within this task.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;todo</code></td><td>Subitems still to do within this task.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;budget</code></td><td>Time, latency, and accuracy budgets.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;tests</code></td><td>Tests required for this task to be considered done.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;notes</code></td><td>Free-form notes about the task.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;refs</code></td><td>References to docs, issues, prior tasks, external links.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;risk</code></td><td>Known risks or open questions.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;result</code></td><td>Outcome of the task once complete.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Index fields -->
+<section id="index-fields" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Category</p>
+    <h2 class="h-section mb-6">Index fields</h2>
+    <p class="lede mb-12">Fields used in <code class="font-mono">tasks_index.md</code> to organize work.</p>
+
+    <div class="card overflow-hidden">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&sect;active</code></td><td>Currently active tasks.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;next</code></td><td>The next task to start.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;later</code></td><td>Tasks queued for later phases.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;phases</code></td><td>Named phases that group tasks.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;phase</code></td><td>A single phase definition.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Learning entry fields -->
+<section id="learning-fields" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Category</p>
+    <h2 class="h-section mb-6">Learning entry fields</h2>
+    <p class="lede mb-12">Fields that structure failure-and-fix records.</p>
+
+    <div class="card overflow-hidden">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&sect;context</code></td><td>What was happening when the failure occurred.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;tried</code></td><td>What was attempted to fix it.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;result-fix</code></td><td>Whether the fix worked: <code class="font-mono text-accent">&sect;fixed</code> or <code class="font-mono text-accent">&sect;not-fixed</code>.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;fixed</code></td><td>The attempted fix worked.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;not-fixed</code></td><td>The attempted fix did not work.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;lesson</code></td><td>The takeaway for future work.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Session entry fields -->
+<section id="session-fields" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Category</p>
+    <h2 class="h-section mb-6">Session entry fields</h2>
+    <p class="lede mb-12">Fields that capture prompt-response exchanges.</p>
+
+    <div class="card overflow-hidden">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&sect;prompt</code></td><td>The user's prompt (or its summary).</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;response</code></td><td>The agent's response (or its summary).</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;decisions</code></td><td>Decisions captured in this exchange.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;artifacts</code></td><td>Files or outputs produced in this exchange.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Budgets and metrics -->
+<section id="metrics" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Category</p>
+    <h2 class="h-section mb-6">Budgets and metrics</h2>
+    <p class="lede mb-12">Symbols for performance budgets, thresholds, and measurements.</p>
+
+    <div class="card overflow-hidden">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&sect;time</code></td><td>Wall-clock time budget for the task.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;lat</code></td><td>Latency budget for the produced code.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;p50</code></td><td>50th percentile latency.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;p99</code></td><td>99th percentile latency.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;throughput</code></td><td>Operations per second budget.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;mem</code></td><td>Memory budget.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;size</code></td><td>Storage size budget.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;acc</code></td><td>Accuracy floor.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;recall</code></td><td>Recall metric (for retrieval tasks).</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;precision</code></td><td>Precision metric.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;floor</code></td><td>A minimum threshold.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;ceiling</code></td><td>A maximum threshold.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Units -->
+<section id="units" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Category</p>
+    <h2 class="h-section mb-6">Units</h2>
+    <p class="lede mb-12">Suffixes applied to numeric values for time and size.</p>
+
+    <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Time units</h3>
+    <div class="card overflow-hidden mb-8">
+      <table>
+        <thead><tr><th>Suffix</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">ns</code></td><td>Nanoseconds</td></tr>
+          <tr><td><code class="font-mono text-accent">us</code></td><td>Microseconds</td></tr>
+          <tr><td><code class="font-mono text-accent">ms</code></td><td>Milliseconds</td></tr>
+          <tr><td><code class="font-mono text-accent">s</code></td><td>Seconds</td></tr>
+          <tr><td><code class="font-mono text-accent">m</code></td><td>Minutes</td></tr>
+          <tr><td><code class="font-mono text-accent">h</code></td><td>Hours</td></tr>
+          <tr><td><code class="font-mono text-accent">d</code></td><td>Days</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Size units</h3>
+    <div class="card overflow-hidden">
+      <table>
+        <thead><tr><th>Suffix</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">b</code></td><td>Bytes</td></tr>
+          <tr><td><code class="font-mono text-accent">kb</code></td><td>Kilobytes</td></tr>
+          <tr><td><code class="font-mono text-accent">mb</code></td><td>Megabytes</td></tr>
+          <tr><td><code class="font-mono text-accent">gb</code></td><td>Gigabytes</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Operators -->
+<section id="operators" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Category</p>
+    <h2 class="h-section mb-6">Operators</h2>
+    <p class="lede mb-12">Comparison operators used in budget constraints and predicates.</p>
+
+    <div class="card overflow-hidden">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&lt;</code></td><td>Less than.</td></tr>
+          <tr><td><code class="font-mono text-accent">&gt;</code></td><td>Greater than.</td></tr>
+          <tr><td><code class="font-mono text-accent">&lt;=</code></td><td>Less than or equal.</td></tr>
+          <tr><td><code class="font-mono text-accent">&gt;=</code></td><td>Greater than or equal.</td></tr>
+          <tr><td><code class="font-mono text-accent">=</code></td><td>Equal.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Generic components -->
+<section id="components" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Category</p>
+    <h2 class="h-section mb-6">Generic components</h2>
+    <p class="lede mb-12">Common component words shared across projects. A specific project may rebind them in its extension dictionary.</p>
+
+    <div class="card overflow-hidden">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&sect;cli</code></td><td>A command-line interface or binary.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;api</code></td><td>An application programming interface.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;ui</code></td><td>A user interface.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;ws</code></td><td>A WebSocket service.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;mcp</code></td><td>A Model Context Protocol server.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;db</code></td><td>A database.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;store</code></td><td>A storage layer.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;index</code></td><td>An index (database index, search index).</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;cache</code></td><td>A cache.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;queue</code></td><td>A queue.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;log</code></td><td>A log.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;schema</code></td><td>A schema definition.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;model</code></td><td>A data model or ML model.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;trait</code></td><td>A trait/interface in code.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;struct</code></td><td>A struct/class in code.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;fn</code></td><td>A function.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;module</code></td><td>A module.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;crate</code></td><td>A Rust crate (or generic package).</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;test-unit</code></td><td>A unit test.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;test-int</code></td><td>An integration test.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;test-e2e</code></td><td>An end-to-end test.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Explanation and verification -->
+<section id="verification" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Category &mdash; added in meta/v2</p>
+    <h2 class="h-section mb-6">Explanation and <span class="text-accent">verification</span></h2>
+    <p class="lede mb-12">Every task closeout produces an <code class="font-mono text-accent">&sect;explanation</code> block listing what the working agent actually did, what it claims is true, what it deferred, and what it learned. An independent verifier then checks every claim and produces a <code class="font-mono text-accent">&sect;verification</code> form.</p>
+
+    <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Top-level forms</h3>
+    <div class="card overflow-hidden mb-8">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&sect;explanation</code></td><td>A working agent's account of what it did during a task, including falsifiable claims for the verifier to check.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;verification</code></td><td>An independent verifier's report on whether the claims in an <code class="font-mono text-accent">&sect;explanation</code> are actually true.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Explanation fields</h3>
+    <div class="card overflow-hidden mb-8">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&sect;did</code></td><td>A list of concrete actions the working agent took (files written, commands run, decisions made).</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;claims</code></td><td>A list of falsifiable assertions the verifier should check.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;deferred</code></td><td>A list of items intentionally not done in this task with the reason.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;learned</code></td><td>A list of lessons or surprises that should also land in <code class="font-mono">learning.gibber</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Claim atoms</h3>
+    <div class="card overflow-hidden mb-8">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&sect;claim</code></td><td>A single falsifiable claim.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;exists</code></td><td>Predicate: a path exists.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;contains</code></td><td>Predicate: a file contains a substring or pattern.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;matches</code></td><td>Predicate: a file matches a regex.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;passed</code></td><td>Predicate: a check passed (used with command output or test results).</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;equals</code></td><td>Predicate: a value equals an expected value.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;absent</code></td><td>Predicate: a path does not exist.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;wrote</code></td><td>Action: the agent wrote a file (used in <code class="font-mono text-accent">&sect;did</code>).</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;ran</code></td><td>Action: the agent ran a command (used in <code class="font-mono text-accent">&sect;did</code>).</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;created</code></td><td>Action: the agent created a directory or new artifact.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;edited</code></td><td>Action: the agent edited an existing file.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;deleted</code></td><td>Action: the agent deleted a file or directory.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;deferred-reason</code></td><td>Field: why an item was deferred.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;learned-from</code></td><td>Field: what triggered the learning entry.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Verification fields</h3>
+    <div class="card overflow-hidden">
+      <table>
+        <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="font-mono text-accent">&sect;verified-by</code></td><td>Identifier of the verifier agent (e.g. fresh <code class="font-mono">claude -p</code> instance).</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;verified-at</code></td><td>ISO timestamp of the verification run.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;verdict</code></td><td><code class="font-mono text-accent">&sect;verified</code> or <code class="font-mono text-accent">&sect;rejected</code>.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;verified</code></td><td>Outcome: every claim was checked and passed.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;rejected</code></td><td>Outcome: at least one claim failed.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;claims-checked</code></td><td>Count of claims the verifier examined.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;claims-passed</code></td><td>Count of claims that passed.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;claims-failed</code></td><td>Count of claims that failed.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;rejected-claims</code></td><td>List of claims the verifier could not confirm, with evidence.</td></tr>
+          <tr><td><code class="font-mono text-accent">&sect;evidence</code></td><td>Free-text or structured evidence the verifier produced for a check.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- footer -->
+<footer class="border-t border-line py-14">
+  <div class="container-prose flex flex-col gap-4 sm:flex-row sm:items-center justify-between text-xs text-ink-lo">
+    <span class="font-mono">gibber/4 &mdash; symbol dictionary</span>
+    <span>meta/v2 &mdash; every symbol defined.</span>
+    <a href="/gibber/" class="transition-colors duration-200 hover:text-ink-hi">Back to gibber home</a>
+  </div>
+</footer>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="/gibber/_next/static/css/bc9e73e112538497.css" data-precedence="next"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <title>The Gibber Specification</title>
+  <meta name="description" content="Version gibber/3 — the complete grammar, file model, and validation rules for the Gibber symbolic format."/>
+</head>
+<body>
+
+<!-- header -->
+<header class="sticky top-0 z-40 border-b border-line/80 bg-bg-base/70 backdrop-blur-md">
+  <div class="container-prose flex h-14 items-center justify-between gap-6">
+    <a href="/gibber/" class="flex items-center gap-2 font-mono text-sm font-semibold text-ink-hi">
+      <span class="inline-block h-2 w-2 rounded-full bg-accent" aria-hidden="true"></span>gibber<span class="font-normal text-ink-lo">/spec</span>
+    </a>
+    <nav class="hidden items-center gap-6 text-xs text-ink-mid md:flex">
+      <a href="/gibber/" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Home</a>
+      <a href="#file-model" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">File Model</a>
+      <a href="#grammar" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Grammar</a>
+      <a href="#functions" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Functions</a>
+      <a href="#dictionaries" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Dictionaries</a>
+      <a href="#validation" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Validation</a>
+    </nav>
+    <a href="/gibber/#use" class="btn-ghost !py-1.5 !text-xs">Get started</a>
+  </div>
+</header>
+
+<main>
+
+<!-- hero -->
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0 bg-grid mask-fade-b opacity-40"></div>
+  <div class="container-prose relative pb-24 pt-20 md:pb-32 md:pt-28">
+    <div class="chip mb-6">
+      <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>gibber/3 &mdash; complete reference
+    </div>
+    <h1 class="h-display max-w-4xl">The Gibber <span class="text-accent">Specification.</span></h1>
+    <p class="mt-6 lede">Version gibber/3 &mdash; the complete grammar, file model, and validation rules for the Gibber symbolic format.</p>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Why this exists -->
+<section id="why" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Motivation</p>
+    <h2 class="h-section mb-6">Why this <span class="text-accent">exists</span></h2>
+    <p class="lede mb-12">Gibber is a compact symbolic file format for AI agent project files. Files written in Gibber are designed to be read by AI agents, not by humans.</p>
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Speed and density for the AI</h3>
+        <p class="text-sm text-ink-mid leading-relaxed">Agents read gibber files directly. The format is dense, low-token, and uses a closed vocabulary that the agent already knows. Long working sessions hold many more files in context.</p>
+      </div>
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Build for the AI, not the reviewer</h3>
+        <p class="text-sm text-ink-mid leading-relaxed">As agents grow more capable and trusted, the percentage of time a human looks at intermediate working files drops toward zero. The right design assumption is that the human will not be reading these. We optimize for the agent.</p>
+      </div>
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Humans get English on demand</h3>
+        <p class="text-sm text-ink-mid leading-relaxed">When a human wants to see the contents of a gibber file in plain English, the AI generates a readable view in the conversation, or writes a derivative <code class="font-mono">.human</code> companion file. The English view is generated from the gibber file, never the other way around.</p>
+      </div>
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Portable</h3>
+        <p class="text-sm text-ink-mid leading-relaxed">The protocol is small enough to teach an AI agent in a single message. Works in any Claude Code project, in any agentic workflow, on any machine.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- File model -->
+<section id="file-model" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Architecture</p>
+    <h2 class="h-section mb-6">File <span class="text-accent">model</span></h2>
+    <p class="lede mb-12">Gibber uses two file extensions with two clear roles. The <code class="font-mono">.gibber</code> file is the source of truth; the <code class="font-mono">.human</code> file is a derivative view.</p>
+
+    <!-- .gibber files -->
+    <div class="card p-6 mb-8">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4"><code class="font-mono">.gibber</code> &mdash; the source of truth</h3>
+      <p class="text-sm text-ink-mid leading-relaxed mb-4">A <code class="font-mono">.gibber</code> file holds a single Gibber AST form, optionally with a tiny YAML frontmatter for the file id and dictionary version. It has <strong class="text-ink-hi">no English section, no <code class="font-mono">## gibber</code> heading, no <code class="font-mono">## human</code> heading</strong>. It is just the Gibber form. This is the format the agent reads, writes, edits, and reasons about.</p>
+
+      <div class="card overflow-hidden">
+        <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+          <span class="font-mono">example: task T042</span>
+          <span class="chip !border-line !bg-transparent !py-0.5 text-[10px] uppercase tracking-[0.2em] text-accent">gibber</span>
+        </div>
+        <pre class="overflow-x-auto p-5 text-[13px] font-mono leading-relaxed"><code>---
+id: T042
+gibber_dict: meta/v1, eidetic_memory
+---
+
+(&#167;task &#167;id:T042
+  &#167;status:&#167;wip
+  &#167;depends:[T041 T038]
+  &#167;owner:&#167;ai
+  &#167;goal:(&#167;build &#167;glp &#167;encoder &#167;with:[&#167;ast &#167;round-trip &#167;bench])
+  &#167;files:[crates/eidetic-glp/src/encoder.rs
+          crates/eidetic-glp/src/dict.rs]
+  &#167;done:[&#167;encode &#167;decode &#167;round-trip-test]
+  &#167;todo:[&#167;load &#167;dict &#167;bench &#167;integrate &#167;verifier]
+  &#167;budget:(&#167;time&lt;2d &#167;lat&lt;1ms &#167;p99&lt;3ms &#167;acc=100%)
+  &#167;tests:[&#167;unit &#167;round-trip &#167;latency])</code></pre>
+      </div>
+    </div>
+
+    <!-- .human files -->
+    <div class="card p-6 mb-8">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4"><code class="font-mono">.human</code> &mdash; derivative, generated on demand</h3>
+      <p class="text-sm text-ink-mid leading-relaxed mb-4">A <code class="font-mono">.human</code> file is a plain English Markdown rendering of a <code class="font-mono">.gibber</code> file. It is <strong class="text-ink-hi">generated by the agent</strong>, never authored by hand. It exists only when a human has asked to see one.</p>
+
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-ink-hi mb-4 mt-6">Rules for .human files</h3>
+      <ol class="space-y-3 text-sm text-ink-mid list-decimal list-inside">
+        <li>The <code class="font-mono">.gibber</code> file is the authoritative source. The <code class="font-mono">.human</code> file is derived from it via the <code class="font-mono">render-english</code> rules in <code class="font-mono">GIBBER-RULES.md</code>.</li>
+        <li>Agents never edit a <code class="font-mono">.human</code> file directly. To change content, edit the <code class="font-mono">.gibber</code> file and re-render.</li>
+        <li>If a <code class="font-mono">.gibber</code> file is newer than its <code class="font-mono">.human</code> companion, the <code class="font-mono">.human</code> is stale and must be regenerated (or deleted) before showing it to a human.</li>
+        <li><code class="font-mono">.human</code> files are generally gitignored. Only <code class="font-mono">.gibber</code> files belong in version control.</li>
+        <li>The agent generates <code class="font-mono">.human</code> views on demand during a conversation. No human-rendering step is built into any tool wrapper or file-write operation.</li>
+      </ol>
+    </div>
+
+    <!-- Compatibility note -->
+    <div class="card p-6 bg-accent/[0.04] border-accent/30">
+      <p class="text-sm text-ink-mid leading-relaxed">
+        <strong class="text-ink-hi">Compatibility note:</strong> Earlier versions of Gibber used a single Markdown file with <code class="font-mono">## gibber</code> and <code class="font-mono">## human</code> headings. That model is <strong class="text-ink-hi">deprecated</strong> as of gibber/3. The two-file <code class="font-mono">.gibber</code> / <code class="font-mono">.human</code> model replaces it. Conversion is mechanical: keep the gibber section, drop the human section, rename from <code class="font-mono">.md</code> to <code class="font-mono">.gibber</code>, and remove the <code class="font-mono">format: dual</code> frontmatter line.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Grammar -->
+<section id="grammar" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Language</p>
+    <h2 class="h-section mb-6">Gibber-speak <span class="text-accent">grammar</span></h2>
+    <p class="lede mb-12">Gibber-speak is a small S-expression-style notation. The grammar is intentionally tiny so it can be parsed by ~100 lines of code in any language.</p>
+
+    <!-- Tokens -->
+    <div class="card p-6 mb-8">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Tokens</h3>
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-line text-left text-xs uppercase tracking-[0.15em] text-ink-lo">
+            <th class="px-4 py-3 font-medium">Token type</th>
+            <th class="px-4 py-3 font-medium">Rule</th>
+            <th class="px-4 py-3 font-medium">Examples</th>
+          </tr>
+        </thead>
+        <tbody class="text-ink-mid">
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Symbols</td>
+            <td class="px-4 py-3">Start with <code class="font-mono text-accent">&#167;</code> followed by lowercase ASCII, digits, or hyphens</td>
+            <td class="px-4 py-3 font-mono">&#167;task, &#167;wip, &#167;glp-encoder, &#167;p99</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Identifiers</td>
+            <td class="px-4 py-3">Bare alphanumeric strings (no leading <code class="font-mono text-accent">&#167;</code>)</td>
+            <td class="px-4 py-3 font-mono">T042, encoder.rs</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Numbers</td>
+            <td class="px-4 py-3">Bare digits, optional decimal point or unit suffix</td>
+            <td class="px-4 py-3 font-mono">2d, 15ms, 100, 0.95</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Operators</td>
+            <td class="px-4 py-3">Comparison and equality</td>
+            <td class="px-4 py-3 font-mono">&lt; &gt; = &lt;= &gt;=</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Punctuation</td>
+            <td class="px-4 py-3">Nesting and lists</td>
+            <td class="px-4 py-3 font-mono">( ) [ ]</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-3 text-ink-hi">Field-value separator</td>
+            <td class="px-4 py-3"><code class="font-mono text-accent">:</code> immediately after a symbol binds a value to it</td>
+            <td class="px-4 py-3 font-mono">&#167;status:&#167;wip</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Structures -->
+    <div class="card p-6 mb-8">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Structures</h3>
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-line text-left text-xs uppercase tracking-[0.15em] text-ink-lo">
+            <th class="px-4 py-3 font-medium">Structure</th>
+            <th class="px-4 py-3 font-medium">Syntax</th>
+            <th class="px-4 py-3 font-medium">Description</th>
+          </tr>
+        </thead>
+        <tbody class="text-ink-mid">
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Atom</td>
+            <td class="px-4 py-3 font-mono">&#167;wip, T042, 15ms</td>
+            <td class="px-4 py-3">Any single token</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">List</td>
+            <td class="px-4 py-3 font-mono">[a b c]</td>
+            <td class="px-4 py-3">An ordered, unnamed sequence</td>
+          </tr>
+          <tr class="border-b border-line">
+            <td class="px-4 py-3 text-ink-hi">Form</td>
+            <td class="px-4 py-3 font-mono">(&#167;head a b c)</td>
+            <td class="px-4 py-3">A named structure where <code class="font-mono text-accent">&#167;head</code> is the type and the rest are children</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-3 text-ink-hi">Field</td>
+            <td class="px-4 py-3 font-mono">&#167;key:value</td>
+            <td class="px-4 py-3">Binds a value (atom, list, or nested form) to a field</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Complete example -->
+    <div class="card overflow-hidden mb-8">
+      <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+        <span class="font-mono">complete task example</span>
+        <span class="chip !border-line !bg-transparent !py-0.5 text-[10px] uppercase tracking-[0.2em] text-accent">gibber</span>
+      </div>
+      <pre class="overflow-x-auto p-5 text-[13px] font-mono leading-relaxed"><code>(&#167;task &#167;id:T042
+  &#167;status:&#167;wip
+  &#167;depends:[T041 T038]
+  &#167;owner:&#167;ai
+  &#167;goal:(&#167;build &#167;glp &#167;encoder &#167;with:[&#167;ast &#167;round-trip &#167;bench])
+  &#167;files:[crates/eidetic-glp/src/encoder.rs
+          crates/eidetic-glp/src/dict.rs]
+  &#167;done:[&#167;encode &#167;decode &#167;round-trip-test]
+  &#167;todo:[&#167;load &#167;dict &#167;bench &#167;integrate &#167;verifier]
+  &#167;budget:(&#167;time&lt;2d &#167;lat&lt;1ms &#167;p99&lt;3ms &#167;acc=100%)
+  &#167;tests:[&#167;unit &#167;round-trip &#167;latency])</code></pre>
+    </div>
+    <p class="text-sm text-ink-mid mb-4">This is one form named <code class="font-mono text-accent">&#167;task</code> with several fields. The whole structure is a tree. A parser can decode it into a typed struct in any language.</p>
+
+    <!-- Whitespace & comments -->
+    <div class="card p-6">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Whitespace and comments</h3>
+      <ul class="space-y-2 text-sm text-ink-mid">
+        <li class="flex gap-2"><span class="text-accent mt-0.5">&bull;</span> Whitespace is insignificant except as a token separator.</li>
+        <li class="flex gap-2"><span class="text-accent mt-0.5">&bull;</span> Newlines and indentation are encouraged for readability but not required.</li>
+        <li class="flex gap-2"><span class="text-accent mt-0.5">&bull;</span> Comments start with <code class="font-mono">;</code> and run to end of line.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Single source of truth -->
+<section id="source-of-truth" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Principle</p>
+    <h2 class="h-section mb-6">The single-source-of-truth <span class="text-accent">rule</span></h2>
+    <p class="lede mb-12">Every <code class="font-mono">.gibber</code> file is the only authoritative representation of its content. There is no second half, no parallel section, no dual-language pair to keep in sync.</p>
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">1</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">The .gibber file is the source</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Always. Edits go here.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">2</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">.human files are derived</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Generated on demand by the agent from the matching <code class="font-mono">.gibber</code> file via the <code class="font-mono">render-english</code> rules in <code class="font-mono">GIBBER-RULES.md</code>.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">3</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">No drift is possible</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Because there is only one editable artifact per piece of information.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">4</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Validation is single-source</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">A validator parses the <code class="font-mono">.gibber</code> file's form and applies the matching <code class="font-mono">validate</code> rule from <code class="font-mono">GIBBER-RULES.md</code>. There is no two-half comparison because there is no second half.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Dictionaries -->
+<section id="dictionaries" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Vocabulary</p>
+    <h2 class="h-section mb-6"><span class="text-accent">Dictionaries</span></h2>
+    <p class="lede mb-12">A gibber dictionary is a list of symbols and their meanings, written in English. Dictionaries are versioned. A file's frontmatter names which dictionary it uses, e.g. <code class="font-mono">gibber_dict: meta/v1</code>.</p>
+
+    <div class="grid gap-5 md:grid-cols-3">
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">1</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Meta-work dictionary</h3>
+        <p class="text-xs text-ink-mid leading-relaxed"><code class="font-mono">meta/v1</code> &mdash; for task files, learning logs, session logs, memory dumps. Project-agnostic. Lives in <code class="font-mono">GIBBER-DICTIONARY.md</code>.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">2</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Project-specific extensions</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Each project may add domain symbols in its own <code class="font-mono">gibber-dict-&lt;project&gt;.md</code> file. The project's <code class="font-mono">CLAUDE.md</code> lists which extensions are loaded alongside <code class="font-mono">meta/v1</code>.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">3</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Specialized dictionaries</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Runtime AI-to-AI compression, AST encoding for source code, etc. Reserved for tools that build on Gibber, not part of the meta-work standard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Functions -->
+<section id="functions" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Standard library</p>
+    <h2 class="h-section mb-6">Built-in <span class="text-accent">functions</span></h2>
+    <p class="lede mb-12">Gibber includes a small standard library of functions the AI executes mentally on read. They are pattern-rewrite rules &mdash; no external code, no library to import, no runtime to install.</p>
+
+    <!-- rep -->
+    <div class="card p-6 mb-5">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-2"><code class="font-mono">&#167;rep</code> &mdash; repetition</h3>
+      <pre class="overflow-x-auto mt-3 rounded-lg border border-line bg-bg-raised p-4 text-[13px] font-mono leading-relaxed"><code>(&#167;rep N X)  -&gt;  [X X X ... X]   ; X repeated N times
+
+; Example:
+(&#167;rep 3 &#167;test)   -&gt;   [&#167;test &#167;test &#167;test]</code></pre>
+    </div>
+
+    <!-- range -->
+    <div class="card p-6 mb-5">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-2"><code class="font-mono">&#167;range</code> &mdash; integer range expansion</h3>
+      <pre class="overflow-x-auto mt-3 rounded-lg border border-line bg-bg-raised p-4 text-[13px] font-mono leading-relaxed"><code>(&#167;range A B)   -&gt;   [A A+1 A+2 ... B]
+
+; Example:
+(&#167;range T001 T003)   -&gt;   [T001 T002 T003]</code></pre>
+    </div>
+
+    <!-- ref -->
+    <div class="card p-6 mb-5">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-2"><code class="font-mono">&#167;ref</code> &mdash; cross-reference</h3>
+      <pre class="overflow-x-auto mt-3 rounded-lg border border-line bg-bg-raised p-4 text-[13px] font-mono leading-relaxed"><code>(&#167;ref ID)         -&gt;  the structure named ID, in full
+(&#167;ref ID FIELD)   -&gt;  the value of FIELD within ID
+
+; Example (assuming T042 has &#167;status:&#167;wip):
+(&#167;ref T042)            -&gt;  the entire T042 structure
+(&#167;ref T042 &#167;status)    -&gt;  &#167;wip</code></pre>
+      <p class="text-xs text-ink-mid leading-relaxed mt-3">A task index does not have to restate every task's full content. It can list IDs and use <code class="font-mono">&#167;ref</code> to pull fields when needed.</p>
+    </div>
+
+    <!-- sub -->
+    <div class="card p-6 mb-5">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-2"><code class="font-mono">&#167;sub</code> &mdash; substitution macro</h3>
+      <pre class="overflow-x-auto mt-3 rounded-lg border border-line bg-bg-raised p-4 text-[13px] font-mono leading-relaxed"><code>(&#167;sub NAME VALUE)
+
+; Defines NAME as VALUE within the current file scope.
+; Example:
+(&#167;sub &#167;my-stack [&#167;rust &#167;kuzu &#167;glp])
+...
+&#167;my-stack   -&gt;   [&#167;rust &#167;kuzu &#167;glp]</code></pre>
+    </div>
+
+    <!-- expand -->
+    <div class="card p-6 mb-5">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-2"><code class="font-mono">&#167;expand</code> &mdash; symbol to English</h3>
+      <pre class="overflow-x-auto mt-3 rounded-lg border border-line bg-bg-raised p-4 text-[13px] font-mono leading-relaxed"><code>(&#167;expand &#167;wip)   -&gt;   "work in progress"
+
+; Looks the symbol up in the loaded dictionary
+; and emits its English meaning.</code></pre>
+    </div>
+
+    <!-- compress -->
+    <div class="card p-6 mb-5">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-2"><code class="font-mono">&#167;compress</code> &mdash; English to symbol</h3>
+      <pre class="overflow-x-auto mt-3 rounded-lg border border-line bg-bg-raised p-4 text-[13px] font-mono leading-relaxed"><code>(&#167;compress "work in progress")   -&gt;   &#167;wip
+
+; The inverse of &#167;expand.</code></pre>
+    </div>
+
+    <!-- concat -->
+    <div class="card p-6 mb-5">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-2"><code class="font-mono">&#167;concat</code> &mdash; concatenation</h3>
+      <pre class="overflow-x-auto mt-3 rounded-lg border border-line bg-bg-raised p-4 text-[13px] font-mono leading-relaxed"><code>(&#167;concat A B C)
+
+; Joins atoms or lists.
+; With strings: produces a single string.
+; With lists: produces a single flattened list.</code></pre>
+    </div>
+
+    <!-- lookup -->
+    <div class="card p-6 mb-8">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-2"><code class="font-mono">&#167;lookup</code> &mdash; dictionary definition</h3>
+      <pre class="overflow-x-auto mt-3 rounded-lg border border-line bg-bg-raised p-4 text-[13px] font-mono leading-relaxed"><code>(&#167;lookup &#167;wip)   -&gt;   "work in progress"
+
+; Like &#167;expand but always returns the string definition
+; exactly as written in the dictionary.</code></pre>
+    </div>
+
+    <!-- Usage hints -->
+    <div class="card p-6 bg-accent/[0.04] border-accent/30">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Usage hints</h3>
+      <ul class="space-y-2 text-sm text-ink-mid">
+        <li class="flex gap-2"><span class="text-accent mt-0.5">&bull;</span> If you write the same symbol three or more times in a row, use <code class="font-mono">&#167;rep</code>.</li>
+        <li class="flex gap-2"><span class="text-accent mt-0.5">&bull;</span> If you list a contiguous range of IDs, use <code class="font-mono">&#167;range</code>.</li>
+        <li class="flex gap-2"><span class="text-accent mt-0.5">&bull;</span> If a task field would restate another task's content verbatim, use <code class="font-mono">&#167;ref</code>.</li>
+        <li class="flex gap-2"><span class="text-accent mt-0.5">&bull;</span> If a tuple or list appears two or more times in the same file, define it once with <code class="font-mono">&#167;sub</code>.</li>
+        <li class="flex gap-2"><span class="text-accent mt-0.5">&bull;</span> When writing the human half, expand all function calls into their resolved values.</li>
+        <li class="flex gap-2"><span class="text-accent mt-0.5">&bull;</span> Never use a function the AI cannot execute from this spec alone. No escape hatch to external code.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Validation -->
+<section id="validation" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Correctness</p>
+    <h2 class="h-section mb-6"><span class="text-accent">Validation</span> rule</h2>
+    <p class="lede mb-12">A gibber file is valid if and only if all five conditions are met. If any fails, the file is rejected and the agent must fix it before writing.</p>
+
+    <div class="card p-6">
+      <ol class="space-y-4 text-sm text-ink-mid">
+        <li class="flex gap-3">
+          <span class="flex-shrink-0 text-accent font-semibold font-mono">1.</span>
+          <span>The frontmatter contains a <code class="font-mono">gibber_dict</code> entry naming the dictionary version.</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="flex-shrink-0 text-accent font-semibold font-mono">2.</span>
+          <span>The body contains exactly one top-level Gibber form (the AST root).</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="flex-shrink-0 text-accent font-semibold font-mono">3.</span>
+          <span>The gibber form parses cleanly under the named dictionary &mdash; every symbol is defined in the dictionary.</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="flex-shrink-0 text-accent font-semibold font-mono">4.</span>
+          <span>All nested forms and fields follow the grammar rules (balanced parentheses, valid field bindings, correct token types).</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="flex-shrink-0 text-accent font-semibold font-mono">5.</span>
+          <span>If a <code class="font-mono">.human</code> companion exists, a semantic comparison of the two finds no contradictions in ID, status, or key fields.</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- How an agent uses gibber -->
+<section id="usage" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Workflow</p>
+    <h2 class="h-section mb-6">How an agent <span class="text-accent">uses gibber</span></h2>
+    <p class="lede mb-12">Four steps define the agent's interaction model with gibber files.</p>
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">1</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Reading a gibber file</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Parse the gibber form into a typed structure. Work with the structure directly. Skip any <code class="font-mono">.human</code> companion &mdash; it is just a view.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">2</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Writing or updating</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Produce the gibber form first, then write the <code class="font-mono">.gibber</code> file. Generate a <code class="font-mono">.human</code> companion only if a human asks.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">3</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Encountering a new symbol</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Check the loaded dictionary. If the symbol is not present, add it to the appropriate extension dictionary with a clear English definition before using it. Never use undefined symbols.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">4</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Detecting drift</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">If the <code class="font-mono">.gibber</code> and <code class="font-mono">.human</code> files disagree, stop, fix the disagreement (always by updating the <code class="font-mono">.gibber</code> file and re-rendering), then proceed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Why this matters -->
+<section id="why-matters" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">The bigger picture</p>
+    <h2 class="h-section mb-6">Why this <span class="text-accent">matters</span></h2>
+
+    <div class="card p-6 bg-accent/[0.04] border-accent/30">
+      <p class="text-sm text-ink-mid leading-relaxed mb-4">
+        In a long-running agent project, internal documents &mdash; task lists, learning notes, session logs, memory dumps &mdash; accumulate fast. They eat context budget. They slow generation. They make session compaction more lossy.
+      </p>
+      <p class="text-sm text-ink-mid leading-relaxed mb-4">
+        <strong class="text-ink-hi">Gibber addresses all three.</strong> Dense gibber files stay in the agent's context at a fraction of the token cost. English views are generated on demand for the human reviewer. Both perspectives exist without a translation step or synchronization burden.
+      </p>
+      <p class="text-sm text-ink-mid leading-relaxed mb-4">
+        This is dogfooding compression at the meta-work layer of the project itself.
+      </p>
+      <p class="text-sm text-ink-mid leading-relaxed">
+        The entire specification, plus the standard meta-work dictionary, plus the templates, fits in a few small files. Designed to be <span class="text-accent font-semibold">copied into any Claude Code project</span> with one install command, <span class="text-accent font-semibold">pasted into any agent's CLAUDE.md</span> so the agent learns gibber immediately, <span class="text-accent font-semibold">shared with another developer</span> as a single archive, and <span class="text-accent font-semibold">extended per project</span> by adding a small domain-specific dictionary. Any agent in any project can speak gibber from its first message, with no per-project re-teaching.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- footer -->
+<footer class="border-t border-line py-14">
+  <div class="container-prose flex flex-col gap-4 sm:flex-row sm:items-center justify-between text-xs text-ink-lo">
+    <span class="font-mono">gibber/3 &mdash; specification</span>
+    <span>The complete grammar, file model, and validation rules.</span>
+    <a href="/gibber/" class="transition-colors duration-200 hover:text-ink-hi">Back to gibber home</a>
+  </div>
+</footer>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="/gibber/_next/static/css/bc9e73e112538497.css" data-precedence="next"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <title>Tools Reference — Gibber Tools</title>
+  <meta name="description" content="tools/v1 — compress CLI output before it hits your agent's context. 1500 tokens becomes 60."/>
+</head>
+<body>
+
+<!-- header -->
+<header class="sticky top-0 z-40 border-b border-line/80 bg-bg-base/70 backdrop-blur-md">
+  <div class="container-prose flex h-14 items-center justify-between gap-6">
+    <a href="/gibber/" class="flex items-center gap-2 font-mono text-sm font-semibold text-ink-hi">
+      <span class="inline-block h-2 w-2 rounded-full bg-accent" aria-hidden="true"></span>gibber<span class="font-normal text-ink-lo">/tools</span>
+    </a>
+    <nav class="hidden items-center gap-6 text-xs text-ink-mid md:flex">
+      <a href="/gibber/" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Home</a>
+      <a href="#problem" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Problem</a>
+      <a href="#fix" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Fix</a>
+      <a href="#mechanisms" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">gibber-run</a>
+      <a href="#rule-format" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Rule Format</a>
+      <a href="#example" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Example</a>
+      <a href="#add-tool" class="cursor-pointer transition-colors duration-200 hover:text-ink-hi">Adding Tools</a>
+    </nav>
+    <a href="/gibber/#use" class="btn-ghost !py-1.5 !text-xs">Get started</a>
+  </div>
+</header>
+
+<main>
+
+<!-- hero -->
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0 bg-grid mask-fade-b opacity-40"></div>
+  <div class="container-prose relative pb-24 pt-20 md:pb-32 md:pt-28">
+    <div class="chip mb-6">
+      <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>tools/v1
+    </div>
+    <h1 class="h-display max-w-4xl">Gibber <span class="text-accent">Tools.</span></h1>
+    <p class="mt-6 lede">Compress CLI output before it hits your agent's context. 1,500 tokens becomes 60.</p>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- The Problem -->
+<section id="problem" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">The bottleneck no one talks about</p>
+    <h2 class="h-section mb-6">The <span class="text-accent">problem.</span></h2>
+    <p class="lede mb-12">Every time your AI agent runs a CLI command, the raw output floods into conversation context. Most of it is noise. All of it costs tokens.</p>
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="card p-6">
+        <div class="flex gap-3 text-sm">
+          <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+          <div>
+            <strong class="text-ink-hi">100% noise, 5% signal.</strong>
+            <span class="text-ink-mid"> The agent pays for every banner, progress bar, ANSI escape code, hint line, and timestamp. It uses maybe 5-20% of the content &mdash; the actual answer it needed.</span>
+          </div>
+        </div>
+      </div>
+      <div class="card p-6">
+        <div class="flex gap-3 text-sm">
+          <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+          <div>
+            <strong class="text-ink-hi">A single build = 2,000 tokens.</strong>
+            <span class="text-ink-mid"> One <code class="font-mono">cargo build</code> can spend 2,000 tokens to communicate a single fact: "it compiled" or "line 42 has a type error." That is an absurd token-to-information ratio.</span>
+          </div>
+        </div>
+      </div>
+      <div class="card p-6">
+        <div class="flex gap-3 text-sm">
+          <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+          <div>
+            <strong class="text-ink-hi">Tool output is the silent context killer.</strong>
+            <span class="text-ink-mid"> Over a long coding session, tool output is often the single largest consumer of the context budget. Not your code. Not your prompts. The output of <code class="font-mono">git status</code>, <code class="font-mono">docker ps</code>, <code class="font-mono">npm install</code>.</span>
+          </div>
+        </div>
+      </div>
+      <div class="card p-6">
+        <div class="flex gap-3 text-sm">
+          <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+          <div>
+            <strong class="text-ink-hi">Every wasted token displaces reasoning.</strong>
+            <span class="text-ink-mid"> Context is a fixed budget. Every token the agent spends re-reading compiler banners is a token it cannot spend thinking about your architecture, your bug, your next step. The waste compounds across every command in the session.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- The Fix -->
+<section id="fix" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">How it works</p>
+    <h2 class="h-section mb-6">The <span class="text-accent">fix.</span></h2>
+    <p class="lede mb-12">Every compressible CLI tool gets a small rule file that teaches Gibber how to extract the signal and discard the noise.</p>
+
+    <div class="grid gap-4 md:grid-cols-5">
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">1</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Invoke correctly</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">The rule specifies how to run the tool with its most structured output mode &mdash; e.g. <code class="font-mono">cargo build --message-format=json</code>.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">2</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Parse to AST</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Raw output is parsed into a traversable structure: JSON, line-based, regex, or Tree-sitter grammar.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">3</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Filter by profile</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">A named profile selects which AST nodes matter: "errors + summary" vs "full trace" vs "summary only."</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">4</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Emit Gibber</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">The filtered AST becomes a compact Gibber form the agent reads for pennies. Structured, parseable, dense.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">5</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Render English</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">If a human asks to see the result, the Gibber form renders back to clean English prose. No information lost.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Two Mechanisms -->
+<section id="mechanisms" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Two paths to compression</p>
+    <h2 class="h-section mb-6">Two <span class="text-accent">mechanisms.</span></h2>
+    <p class="lede mb-12">Pick the one that fits your workflow. Both use the same rule files and produce the same compressed output.</p>
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="card p-6 border-accent/30">
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="chip"><span class="h-1.5 w-1.5 rounded-full bg-accent"></span>opt-in</span>
+          <span class="chip"><span class="h-1.5 w-1.5 rounded-full bg-accent"></span>ship today</span>
+        </div>
+        <h3 class="text-lg font-semibold text-ink-hi mb-3">Wrapper script: <code class="font-mono text-accent">gibber-run</code></h3>
+        <p class="text-sm text-ink-mid leading-relaxed mb-4">The agent runs <code class="font-mono">gibber-run cargo build</code> instead of <code class="font-mono">cargo build</code>. The wrapper reads the rule, invokes the tool, parses, filters, and emits Gibber. No harness changes needed.</p>
+        <div class="card overflow-hidden">
+          <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+            <span class="font-mono">syntax</span>
+          </div>
+          <pre class="overflow-x-auto p-5 text-[13px] font-mono leading-relaxed"><code>gibber-run [--raw] [--profile NAME] &lt;command&gt; [args...]
+
+<span class="text-ink-lo">--raw</span>       bypass filter, return raw output (debugging)
+<span class="text-ink-lo">--profile</span>   pick a named profile (errors, full, summary...)</code></pre>
+        </div>
+      </div>
+
+      <div class="card p-6">
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="chip"><span class="h-1.5 w-1.5 rounded-full bg-amber-300/80"></span>automatic</span>
+          <span class="chip"><span class="h-1.5 w-1.5 rounded-full bg-amber-300/80"></span>ship later</span>
+        </div>
+        <h3 class="text-lg font-semibold text-ink-hi mb-3">Claude Code Bash hook</h3>
+        <p class="text-sm text-ink-mid leading-relaxed mb-4">A post-Bash hook in <code class="font-mono">~/.claude/settings.json</code> intercepts every Bash tool call, looks up the command in the rules directory, and rewrites the output through the same filter. Automatic for every command &mdash; the agent never needs to remember a wrapper.</p>
+        <div class="card overflow-hidden">
+          <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+            <span class="font-mono">how it works</span>
+          </div>
+          <pre class="overflow-x-auto p-5 text-[13px] font-mono leading-relaxed"><code><span class="text-ink-lo">1.</span> Agent calls Bash("cargo build")
+<span class="text-ink-lo">2.</span> Hook intercepts, finds cargo.rules
+<span class="text-ink-lo">3.</span> Rewrites output through the filter
+<span class="text-ink-lo">4.</span> Agent receives compressed Gibber form</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Rule Format -->
+<section id="rule-format" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">The schema</p>
+    <h2 class="h-section mb-6">Rule file <span class="text-accent">format.</span></h2>
+    <p class="lede mb-12">Each rule file is itself a Gibber form in <code class="font-mono">tools/rules/&lt;tool&gt;.rules</code>. One file per tool. Here is the schema.</p>
+
+    <div class="card overflow-hidden mb-8">
+      <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+        <span class="font-mono">&#167;tool-rule schema</span>
+        <span class="chip !border-line !bg-transparent !py-0.5 text-[10px] uppercase tracking-[0.2em] text-accent">gibber</span>
+      </div>
+      <pre class="overflow-x-auto p-5 text-[13px] font-mono leading-relaxed"><code><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;tool-rule</span> <span class="text-gib-key">&#167;tool:</span><span class="text-ink-mid">&lt;tool-name&gt;</span> <span class="text-gib-key">&#167;version:</span><span class="text-ink-mid">&lt;version&gt;</span>
+  <span class="text-gib-key">&#167;invoke:</span><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;cmd</span> <span class="text-ink-mid">&lt;argv-template&gt;</span> <span class="text-gib-key">&#167;output:</span><span class="text-gib-sym">&#167;json</span> | <span class="text-gib-sym">&#167;lines</span> | <span class="text-gib-sym">&#167;raw</span><span class="text-gib-paren">)</span>
+  <span class="text-gib-key">&#167;parse:</span><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;format</span> <span class="text-gib-sym">&#167;json</span> | <span class="text-gib-sym">&#167;regex</span> | <span class="text-gib-sym">&#167;lines</span>
+          <span class="text-gib-key">&#167;schema:</span><span class="text-ink-mid">&lt;schema-spec&gt;</span><span class="text-gib-paren">)</span>
+  <span class="text-gib-key">&#167;profiles:</span><span class="text-gib-paren">[</span>
+    <span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;profile</span> <span class="text-gib-key">&#167;name:</span><span class="text-ink-mid">&lt;name&gt;</span>
+      <span class="text-gib-key">&#167;keep:</span><span class="text-gib-paren">[</span><span class="text-ink-mid">&lt;node-selector&gt; ...</span><span class="text-gib-paren">]</span>
+      <span class="text-gib-key">&#167;drop:</span><span class="text-gib-paren">[</span><span class="text-ink-mid">&lt;node-selector&gt; ...</span><span class="text-gib-paren">]</span>
+      <span class="text-gib-key">&#167;render:</span><span class="text-gib-paren">(</span><span class="text-ink-mid">&lt;gibber-template&gt;</span><span class="text-gib-paren">)</span><span class="text-gib-paren">)</span><span class="text-gib-paren">]</span>
+  <span class="text-gib-key">&#167;default-profile:</span><span class="text-ink-mid">&lt;name&gt;</span>
+  <span class="text-gib-key">&#167;render-english:</span><span class="text-gib-paren">(</span><span class="text-ink-mid">&lt;template&gt;</span><span class="text-gib-paren">)</span><span class="text-gib-paren">)</span></code></pre>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div class="card p-5">
+        <h3 class="text-sm font-semibold text-accent mb-2 font-mono">&#167;invoke</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Specifies how to actually run the tool. May include flags added automatically to get structured output (e.g. <code class="font-mono">--message-format=json</code>).</p>
+      </div>
+      <div class="card p-5">
+        <h3 class="text-sm font-semibold text-accent mb-2 font-mono">&#167;parse</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">How to turn raw output into a traversable structure. For JSON the schema is implicit; for line-based or regex parsing it names the fields per line.</p>
+      </div>
+      <div class="card p-5">
+        <h3 class="text-sm font-semibold text-accent mb-2 font-mono">&#167;profiles</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Named filters. Each profile says which AST nodes to keep, which to drop, and how to render the keepers as Gibber. Multiple profiles per tool.</p>
+      </div>
+      <div class="card p-5">
+        <h3 class="text-sm font-semibold text-accent mb-2 font-mono">&#167;default-profile</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Used when no <code class="font-mono">--profile</code> flag is passed. Typically the most useful balance of signal and brevity for day-to-day work.</p>
+      </div>
+      <div class="card p-5">
+        <h3 class="text-sm font-semibold text-accent mb-2 font-mono">&#167;render-english</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Used when the user wants to see the filtered result in human prose instead of Gibber. Lossless round-trip from the compressed form back to readable English.</p>
+      </div>
+      <div class="card p-5">
+        <h3 class="text-sm font-semibold text-accent mb-2 font-mono">&#167;schema</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Defines the expected structure of the parsed output. Implicit for JSON tools, explicit for line-based and regex parsers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- What the agent sees -->
+<section id="example" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">The payoff</p>
+    <h2 class="h-section mb-6">What the agent <span class="text-accent">sees.</span></h2>
+    <p class="lede mb-12">Same information. 96% fewer tokens. This is the entire point.</p>
+
+    <div class="grid gap-5 md:grid-cols-2 mb-8">
+      <!-- Without -->
+      <div class="card overflow-hidden">
+        <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+          <span class="font-mono">without Gibber Tools</span>
+          <span class="chip !border-line !bg-transparent !py-0.5 text-[10px] uppercase tracking-[0.2em] text-amber-300/80">raw</span>
+        </div>
+        <pre class="overflow-x-auto p-5 text-[13px] font-mono leading-relaxed text-ink-mid"><code>$ cargo build
+   Compiling eidetic-core v0.1.0
+     (/Users/dz/eidetic/crates/eidetic-core)
+   Compiling eidetic-store v0.1.0
+     (/Users/dz/eidetic/crates/eidetic-store)
+   ... (hundreds of lines) ...
+
+error[E0308]: mismatched types
+  --&gt; crates/eidetic-core/src/lib.rs:42:17
+   |
+42 |     let x: u32 = "hello";
+   |            ---   ^^^^^^^
+   |            |     expected `u32`, found `&amp;str`
+   |            |
+   |            expected due to this
+   ...
+error: could not compile `eidetic-core`
+  due to previous error</code></pre>
+        <div class="border-t border-line bg-bg-raised px-4 py-3 text-center">
+          <span class="text-sm font-semibold text-amber-300/80 font-mono">~1,500 tokens</span>
+        </div>
+      </div>
+
+      <!-- With -->
+      <div class="card overflow-hidden border-accent/30">
+        <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+          <span class="font-mono">with Gibber Tools</span>
+          <span class="chip !border-line !bg-transparent !py-0.5 text-[10px] uppercase tracking-[0.2em] text-accent">gibber</span>
+        </div>
+        <pre class="overflow-x-auto p-5 text-[13px] font-mono leading-relaxed"><code><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;result</span> <span class="text-gib-key">&#167;tool:</span><span class="text-ink-mid">cargo</span> <span class="text-gib-key">&#167;cmd:</span><span class="text-ink-mid">build</span>
+  <span class="text-gib-key">&#167;outcome:</span><span class="text-gib-sym">&#167;failed</span>
+  <span class="text-gib-key">&#167;errors:</span><span class="text-gib-paren">[</span>
+    <span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;diagnostic</span>
+      <span class="text-gib-key">&#167;level:</span><span class="text-gib-sym">&#167;error</span>
+      <span class="text-gib-key">&#167;code:</span><span class="text-ink-mid">E0308</span>
+      <span class="text-gib-key">&#167;file:</span><span class="text-gib-str">"crates/eidetic-core/src/lib.rs"</span>
+      <span class="text-gib-key">&#167;line:</span><span class="text-gib-num">42</span> <span class="text-gib-key">&#167;col:</span><span class="text-gib-num">17</span>
+      <span class="text-gib-key">&#167;message:</span><span class="text-gib-str">"mismatched types:
+        expected u32, found &amp;str"</span><span class="text-gib-paren">)</span><span class="text-gib-paren">]</span>
+  <span class="text-gib-key">&#167;summary:</span><span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;compiled</span> <span class="text-gib-num">0</span>
+    <span class="text-gib-sym">&#167;failed</span> <span class="text-gib-num">1</span><span class="text-gib-paren">)</span><span class="text-gib-paren">)</span></code></pre>
+        <div class="border-t border-line bg-bg-raised px-4 py-3 text-center">
+          <span class="text-sm font-semibold text-accent font-mono">~60 tokens</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparison card -->
+    <div class="card p-6 bg-accent/[0.04] border-accent/30">
+      <div class="grid gap-6 md:grid-cols-3 text-center">
+        <div>
+          <div class="text-3xl font-semibold text-amber-300/80 font-mono">1,500</div>
+          <div class="text-xs text-ink-lo mt-1 uppercase tracking-[0.15em]">tokens before</div>
+        </div>
+        <div>
+          <div class="text-3xl font-semibold text-accent font-mono">60</div>
+          <div class="text-xs text-ink-lo mt-1 uppercase tracking-[0.15em]">tokens after</div>
+        </div>
+        <div>
+          <div class="text-3xl font-semibold text-accent font-mono">96%</div>
+          <div class="text-xs text-ink-lo mt-1 uppercase tracking-[0.15em]">reduction</div>
+        </div>
+      </div>
+      <p class="text-sm text-ink-mid leading-relaxed mt-6 text-center">
+        The agent has every fact it needs to fix the bug. File, line, column, error code, message. Zero noise. The other 1,440 tokens are free for reasoning.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Distribution -->
+<section id="distribution" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Where it lives</p>
+    <h2 class="h-section mb-6"><span class="text-accent">Distribution.</span></h2>
+    <p class="lede mb-12">Gibber Tools is a subdirectory of the standard Gibber distribution. It reuses the same spec, dictionary, and rules architecture.</p>
+
+    <div class="card overflow-hidden">
+      <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+        <span class="font-mono">~/.claude/shared/gibber/</span>
+      </div>
+      <pre class="overflow-x-auto p-5 text-[13px] font-mono leading-relaxed"><code><span class="text-ink-lo">~/.claude/shared/gibber/</span>
+  GIBBER-SPEC.md
+  GIBBER-DICTIONARY.md
+  GIBBER-RULES.md
+  GIBBER-VERSION
+  GIBBER-CLAUDE.md
+  gibber-install.sh
+  templates/
+  <span class="text-accent">tools/</span>
+    <span class="text-accent">GIBBER-TOOLS.md</span>              <span class="text-ink-lo"># the spec (this page)</span>
+    <span class="text-accent">tools-dictionary.md</span>          <span class="text-ink-lo"># per-tool symbol extension</span>
+    <span class="text-accent">gibber-run</span>                   <span class="text-ink-lo"># the wrapper script</span>
+    <span class="text-accent">rules/</span>
+      cargo.rules
+      git.rules
+      kubectl.rules
+      docker.rules
+      npm.rules
+      pytest.rules
+      rustc.rules
+      generic.rules              <span class="text-ink-lo"># ANSI+stopword strip fallback</span></code></pre>
+    </div>
+
+    <div class="card p-6 mt-8">
+      <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Everything compounds</h3>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div class="rounded-lg border border-line bg-bg-raised p-4">
+          <div class="text-xs text-ink-lo uppercase tracking-[0.15em] mb-1">Grammar</div>
+          <div class="text-sm text-ink-hi">Same S-expression spec</div>
+        </div>
+        <div class="rounded-lg border border-line bg-bg-raised p-4">
+          <div class="text-xs text-ink-lo uppercase tracking-[0.15em] mb-1">Dictionary</div>
+          <div class="text-sm text-ink-hi">Base + tool extensions</div>
+        </div>
+        <div class="rounded-lg border border-line bg-bg-raised p-4">
+          <div class="text-xs text-ink-lo uppercase tracking-[0.15em] mb-1">Rules</div>
+          <div class="text-sm text-ink-hi">Same per-node architecture</div>
+        </div>
+        <div class="rounded-lg border border-line bg-bg-raised p-4">
+          <div class="text-xs text-ink-lo uppercase tracking-[0.15em] mb-1">Skill</div>
+          <div class="text-sm text-ink-hi">Already-taught agent reads tool output</div>
+        </div>
+        <div class="rounded-lg border border-line bg-bg-raised p-4">
+          <div class="text-xs text-ink-lo uppercase tracking-[0.15em] mb-1">Fast path</div>
+          <div class="text-sm text-ink-hi">Same version-check mechanism</div>
+        </div>
+        <div class="rounded-lg border border-line bg-bg-raised p-4">
+          <div class="text-xs text-ink-lo uppercase tracking-[0.15em] mb-1">Cost</div>
+          <div class="text-sm text-ink-hi">Zero new protocols to learn</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- How to add a tool -->
+<section id="add-tool" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Extend it</p>
+    <h2 class="h-section mb-6">How to add a <span class="text-accent">new tool.</span></h2>
+    <p class="lede mb-12">Each high-impact tool is 50-150 lines of rule definition. You write it once. Every future session benefits forever.</p>
+
+    <div class="grid gap-4 md:grid-cols-5">
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">1</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Create the rule file</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Add <code class="font-mono">tools/rules/&lt;toolname&gt;.rules</code> following the <code class="font-mono">&#167;tool-rule</code> schema above.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">2</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Extend the dictionary</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Add any new symbols to <code class="font-mono">tools/tools-dictionary.md</code> with English definitions.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">3</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Capture fixtures</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Record 3-5 real outputs (success, warning, error) in <code class="font-mono">tools/fixtures/&lt;toolname&gt;/</code>.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">4</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Run conformance</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">Execute <code class="font-mono">gibber-run --selftest &lt;toolname&gt;</code> to verify every load-bearing fact is extracted.</p>
+      </div>
+      <div class="card p-6">
+        <div class="text-2xl font-semibold text-accent mb-2">5</div>
+        <h3 class="text-sm font-semibold text-ink-hi mb-2">Done</h3>
+        <p class="text-xs text-ink-mid leading-relaxed">The agent can now run <code class="font-mono">gibber-run &lt;toolname&gt; [args]</code> and get compressed structured results.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Caveats -->
+<section id="caveats" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Eyes open</p>
+    <h2 class="h-section mb-6">Honest <span class="text-accent">caveats.</span></h2>
+    <p class="lede mb-12">Gibber Tools is not magic. Here is what you should know before adopting it.</p>
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold text-ink-hi mb-3">Format changes break rules</h3>
+        <p class="text-sm text-ink-mid leading-relaxed">Tool output formats change with upstream versions. When <code class="font-mono">cargo</code> updates its JSON schema, rule files need updating. The conformance harness (capture real outputs, compare against expected) catches regressions &mdash; but someone still has to fix them.</p>
+      </div>
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold text-ink-hi mb-3">Some tools are messy</h3>
+        <p class="text-sm text-ink-mid leading-relaxed">Interactive tools, animated progress bars, tools that use ANSI for layout &mdash; these do not have clean parseable output. For these, <code class="font-mono">generic.rules</code> strips ANSI codes and common stopwords as a best-effort fallback. It helps, but it is not surgical.</p>
+      </div>
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold text-ink-hi mb-3">Sometimes you want raw</h3>
+        <p class="text-sm text-ink-mid leading-relaxed">Debugging unusual failures, investigating a tool's behavior, reading verbose logs on purpose. The <code class="font-mono">--raw</code> flag and the <code class="font-mono">--profile full</code> profile always provide an escape hatch. Compression is the default, not a prison.</p>
+      </div>
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold text-ink-hi mb-3">Writing rules is real work</h3>
+        <p class="text-sm text-ink-mid leading-relaxed">Each high-impact tool rule is 50-150 lines. You have to understand the tool's output format, decide which fields matter, and write the Gibber template. But you pay this cost once per tool, and every future session benefits forever.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- footer -->
+<footer class="border-t border-line py-14">
+  <div class="container-prose flex flex-col gap-4 sm:flex-row sm:items-center justify-between text-xs text-ink-lo">
+    <span class="font-mono">gibber/tools &mdash; v1</span>
+    <span>1,500 tokens becomes 60. Every session. Every tool.</span>
+    <a href="/gibber/" class="transition-colors duration-200 hover:text-ink-hi">Back to gibber home</a>
+  </div>
+</footer>
+
+</main>
+</body>
+</html>

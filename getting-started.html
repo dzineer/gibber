@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="/gibber/_next/static/css/bc9e73e112538497.css" data-precedence="next"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <title>Getting Started — Gibber</title>
+  <meta name="description" content="From zero to your first .gibber file in under two minutes."/>
+</head>
+<body>
+<header class="sticky top-0 z-40 border-b border-line/80 bg-bg-base/70 backdrop-blur-md">
+  <div class="container-prose flex h-14 items-center justify-between gap-6">
+    <a href="/gibber/" class="flex items-center gap-2 font-mono text-sm font-semibold text-ink-hi">
+      <span class="inline-block h-2 w-2 rounded-full bg-accent" aria-hidden="true"></span>gibber<span class="font-normal text-ink-lo">/getting-started</span>
+    </a>
+    <nav class="hidden items-center gap-6 text-xs text-ink-mid md:flex">
+      <a href="/gibber/" class="hover:text-ink-hi">Home</a>
+      <a href="#install" class="hover:text-ink-hi">Installation</a>
+      <a href="#first-file" class="hover:text-ink-hi">First file</a>
+      <a href="#templates" class="hover:text-ink-hi">Templates</a>
+      <a href="#project-setup" class="hover:text-ink-hi">Project setup</a>
+      <a href="#two-file-model" class="hover:text-ink-hi">Two-file model</a>
+    </nav>
+    <a href="/gibber/#use" class="btn-ghost !py-1.5 !text-xs">Get started</a>
+  </div>
+</header>
+<main>
+
+<!-- hero -->
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0 bg-grid mask-fade-b opacity-40"></div>
+  <div class="container-prose relative pb-24 pt-20 md:pb-32 md:pt-28">
+    <div class="chip mb-6">
+      <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>quick start
+    </div>
+    <h1 class="h-display max-w-4xl">Getting <span class="text-accent">Started.</span></h1>
+    <p class="mt-6 lede">From zero to your first .gibber file in under two minutes.</p>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Installation -->
+<section id="install" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Step 1</p>
+    <h2 class="h-section mb-6">Installation</h2>
+    <p class="lede mb-12">One command. No dependencies beyond <code class="font-mono text-accent">bash</code> and <code class="font-mono text-accent">curl</code>.</p>
+
+    <div class="card overflow-hidden mb-8">
+      <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+        <span class="font-mono">terminal</span>
+        <span class="chip !border-line !bg-transparent !py-0.5 text-[10px] uppercase tracking-[0.2em] text-accent">bash</span>
+      </div>
+      <pre class="overflow-x-auto p-5 text-[13px] font-mono leading-relaxed text-ink-mid"><code>curl -sL https://raw.githubusercontent.com/dzineer/gibber/main/gibber-install.sh | bash</code></pre>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-3 mb-8">
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">What it installs</h3>
+        <p class="text-ink-mid text-sm leading-relaxed">The spec, dictionary, rules, templates, and tool wrappers. Everything an AI agent needs to read and write Gibber from day one.</p>
+      </div>
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Where</h3>
+        <p class="text-ink-mid text-sm leading-relaxed"><code class="font-mono text-accent">~/.claude/shared/gibber/</code> &mdash; a shared location accessible to every Claude Code project on your machine.</p>
+      </div>
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Idempotent</h3>
+        <p class="text-ink-mid text-sm leading-relaxed">Safe to re-run at any time. It checks versions, backs up existing files, and only overwrites when the upstream version is newer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Your first .gibber file -->
+<section id="first-file" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Step 2</p>
+    <h2 class="h-section mb-6">Your first <span class="text-accent">.gibber file</span></h2>
+    <p class="lede mb-12">A task file is the simplest Gibber structure. Here is one with annotations.</p>
+
+    <div class="card overflow-hidden mb-8">
+      <div class="flex items-center justify-between border-b border-line bg-bg-raised px-4 py-2 text-xs font-medium text-ink-lo">
+        <span class="font-mono">tasks/current_task.gibber</span>
+        <span class="chip !border-line !bg-transparent !py-0.5 text-[10px] uppercase tracking-[0.2em] text-accent">gibber</span>
+      </div>
+      <pre class="overflow-x-auto p-5 text-[13px] font-mono leading-relaxed"><code><span class="text-ink-lo">---</span>
+<span class="text-gib-key">id:</span> <span class="text-ink-mid">CURRENT</span>
+<span class="text-gib-key">gibber_dict:</span> <span class="text-ink-mid">meta/v2</span>
+<span class="text-ink-lo">---</span>
+<span class="text-gib-paren">(</span><span class="text-gib-sym">&#167;task</span> <span class="text-gib-key">&#167;id:</span><span class="text-ink-mid">T001</span> <span class="text-gib-key">&#167;status:</span><span class="text-gib-sym">&#167;wip</span>
+  <span class="text-gib-key">&#167;title:</span><span class="text-gib-str">"set up project scaffolding"</span>
+  <span class="text-gib-key">&#167;owner:</span><span class="text-gib-sym">&#167;ai</span>
+  <span class="text-gib-key">&#167;created:</span><span class="text-ink-mid">2026-04-13</span>
+  <span class="text-gib-key">&#167;goal:</span><span class="text-gib-str">"cargo init, add deps, create module stubs"</span>
+  <span class="text-gib-key">&#167;todo:</span><span class="text-gib-paren">[</span>
+    <span class="text-gib-str">"create Cargo.toml with initial deps"</span>
+    <span class="text-gib-str">"add src/lib.rs module structure"</span>
+    <span class="text-gib-str">"write first test"</span><span class="text-gib-paren">]</span><span class="text-gib-paren">)</span></code></pre>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2 mb-8">
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">Frontmatter</h3>
+        <p class="text-ink-mid text-sm leading-relaxed">Every <code class="font-mono text-accent">.gibber</code> file starts with a YAML frontmatter block containing <code class="font-mono text-accent">id</code> and <code class="font-mono text-accent">gibber_dict</code>. The id is a unique identifier; the dict tells the agent which symbol vocabulary to load.</p>
+      </div>
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">The form</h3>
+        <p class="text-ink-mid text-sm leading-relaxed">After the frontmatter, the body is a single S-expression form. Parentheses delimit structure. <code class="font-mono text-accent">&#167;task</code> is the form type. Fields like <code class="font-mono text-accent">&#167;id:</code> and <code class="font-mono text-accent">&#167;status:</code> are key-value pairs. Lists use square brackets.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Templates -->
+<section id="templates" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Step 3</p>
+    <h2 class="h-section mb-6">Templates</h2>
+    <p class="lede mb-12">Six standard templates ship with the installer. Copy, fill in the placeholders, and go.</p>
+
+    <div class="grid gap-4 md:grid-cols-3 mb-8">
+      <div class="card p-6">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
+          <h3 class="font-mono text-sm text-ink-hi">task.gibber</h3>
+        </div>
+        <p class="text-ink-mid text-sm leading-relaxed">Single task with id, status, title, owner, goal, todo list, and result fields. The workhorse of project tracking.</p>
+      </div>
+      <div class="card p-6">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
+          <h3 class="font-mono text-sm text-ink-hi">index.gibber</h3>
+        </div>
+        <p class="text-ink-mid text-sm leading-relaxed">Task index with active, next, and later queues. Keeps the backlog organized with phase grouping.</p>
+      </div>
+      <div class="card p-6">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
+          <h3 class="font-mono text-sm text-ink-hi">completed.gibber</h3>
+        </div>
+        <p class="text-ink-mid text-sm leading-relaxed">Archive of finished tasks with results and timestamps. Grows over time; agents use it for retrospectives.</p>
+      </div>
+      <div class="card p-6">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
+          <h3 class="font-mono text-sm text-ink-hi">learning.gibber</h3>
+        </div>
+        <p class="text-ink-mid text-sm leading-relaxed">Failure log with context, what was tried, outcome, and lesson learned. Prevents the agent from repeating mistakes.</p>
+      </div>
+      <div class="card p-6">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
+          <h3 class="font-mono text-sm text-ink-hi">session.gibber</h3>
+        </div>
+        <p class="text-ink-mid text-sm leading-relaxed">Session log capturing prompts, responses, decisions, and artifacts. Survives context compaction.</p>
+      </div>
+      <div class="card p-6">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>
+          <h3 class="font-mono text-sm text-ink-hi">memory.gibber</h3>
+        </div>
+        <p class="text-ink-mid text-sm leading-relaxed">Persistent memory dump with facts, preferences, and project state. The agent reads this on every session start.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Project setup -->
+<section id="project-setup" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Step 4</p>
+    <h2 class="h-section mb-6">Project setup</h2>
+    <p class="lede mb-12">Add Gibber to any Claude Code project in three steps.</p>
+
+    <div class="space-y-4 mb-8">
+      <div class="card p-6 flex gap-4">
+        <span class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full border border-line bg-bg-raised font-mono text-sm text-accent font-semibold">1</span>
+        <div>
+          <h3 class="text-sm font-semibold text-ink-hi mb-1">Add the Gibber Protocol block to your CLAUDE.md</h3>
+          <p class="text-ink-mid text-sm leading-relaxed">Copy the Gibber Protocol section from the spec into your project's <code class="font-mono text-accent">CLAUDE.md</code>. This teaches every agent session how to read and write Gibber, including the fast-path version check.</p>
+        </div>
+      </div>
+      <div class="card p-6 flex gap-4">
+        <span class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full border border-line bg-bg-raised font-mono text-sm text-accent font-semibold">2</span>
+        <div>
+          <h3 class="text-sm font-semibold text-ink-hi mb-1">Create a project extension dictionary</h3>
+          <p class="text-ink-mid text-sm leading-relaxed">Create <code class="font-mono text-accent">gibber-dict-yourproject.md</code> in the project root. Add domain-specific symbols here. Start empty and grow it as needed.</p>
+        </div>
+      </div>
+      <div class="card p-6 flex gap-4">
+        <span class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full border border-line bg-bg-raised font-mono text-sm text-accent font-semibold">3</span>
+        <div>
+          <h3 class="text-sm font-semibold text-ink-hi mb-1">Initialize the file structure</h3>
+          <p class="text-ink-mid text-sm leading-relaxed">Copy templates from <code class="font-mono text-accent">~/.claude/shared/gibber/templates/</code> into your project's <code class="font-mono text-accent">tasks/</code> and <code class="font-mono text-accent">memory/</code> directories. Fill in the placeholders. The agent will take it from there.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Two-file model -->
+<section id="two-file-model" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Concept</p>
+    <h2 class="h-section mb-6">The two-file <span class="text-accent">model</span></h2>
+    <p class="lede mb-12">Every Gibber document exists as two files: the source of truth and its human-readable derivative.</p>
+
+    <div class="grid gap-5 md:grid-cols-2 mb-8">
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">.gibber &mdash; source of truth</h3>
+        <div class="space-y-3">
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <span class="text-ink-mid">Written and read by the AI agent directly</span>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <span class="text-ink-mid">Contains the Gibber AST form with optional YAML frontmatter</span>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <span class="text-ink-mid">All edits happen here. This file is always authoritative.</span>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <span class="text-ink-mid">Compact: typically 2&ndash;5x fewer tokens than English equivalent</span>
+          </div>
+        </div>
+      </div>
+      <div class="card p-6">
+        <h3 class="text-sm font-semibold uppercase tracking-[0.15em] text-accent mb-4">.human &mdash; derivative</h3>
+        <div class="space-y-3">
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <span class="text-ink-mid">Generated on demand when a human asks to see the file</span>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <span class="text-ink-mid">Rendered as English Markdown, fully readable without knowing Gibber</span>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <span class="text-ink-mid">Never edited directly &mdash; always regenerated from the .gibber source</span>
+          </div>
+          <div class="flex gap-3 text-sm">
+            <span class="flex-shrink-0 mt-0.5 h-1.5 w-1.5 rounded-full bg-accent"></span>
+            <span class="text-ink-mid">Ephemeral: may be stale if the .gibber file has changed since last render</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hairline"></div>
+
+<!-- Next steps -->
+<section id="next-steps" class="section scroll-mt-20">
+  <div class="container-prose">
+    <p class="kicker">Keep going</p>
+    <h2 class="h-section mb-6">Next steps</h2>
+    <p class="lede mb-12">Now that you have Gibber installed and your first file written, dive deeper.</p>
+
+    <div class="grid gap-4 md:grid-cols-2 mb-8">
+      <a href="/gibber/spec.html" class="card p-6 group">
+        <h3 class="text-sm font-semibold text-ink-hi mb-2 group-hover:text-accent">The Specification</h3>
+        <p class="text-ink-mid text-sm leading-relaxed">The complete grammar, file model, built-in functions, and validation rules.</p>
+      </a>
+      <a href="/gibber/dictionary.html" class="card p-6 group">
+        <h3 class="text-sm font-semibold text-ink-hi mb-2 group-hover:text-accent">Symbol Dictionary</h3>
+        <p class="text-ink-mid text-sm leading-relaxed">Every symbol in the meta/v2 standard vocabulary, organized by category.</p>
+      </a>
+      <a href="/gibber/tools.html" class="card p-6 group">
+        <h3 class="text-sm font-semibold text-ink-hi mb-2 group-hover:text-accent">Gibber Tools</h3>
+        <p class="text-ink-mid text-sm leading-relaxed">Compress CLI output before it hits context. 1500 tokens becomes 60.</p>
+      </a>
+      <a href="/gibber/case-studies.html" class="card p-6 group">
+        <h3 class="text-sm font-semibold text-ink-hi mb-2 group-hover:text-accent">Case Studies</h3>
+        <p class="text-ink-mid text-sm leading-relaxed">Real-world evaluations of Gibber in production AI agent workflows.</p>
+      </a>
+      <a href="/gibber/white-paper.html" class="card p-6 group md:col-span-2">
+        <h3 class="text-sm font-semibold text-ink-hi mb-2 group-hover:text-accent">White Paper: The Jibber Protocol</h3>
+        <p class="text-ink-mid text-sm leading-relaxed">The academic treatment &mdash; towards deterministic AI-to-AI communication systems.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="border-t border-line py-14">
+  <div class="container-prose flex flex-col gap-4 sm:flex-row sm:items-center justify-between text-xs text-ink-lo">
+    <span class="font-mono">gibber/4 &mdash; getting-started</span>
+    <span>From zero to Gibber in two minutes.</span>
+    <a href="/gibber/" class="hover:text-ink-hi">Back to gibber home</a>
+  </div>
+</footer>
+</main>
+</body>
+</html>
