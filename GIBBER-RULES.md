@@ -358,6 +358,69 @@ These are defined in `GIBBER-SPEC.md`. They are not data nodes — they are oper
    - When comparing two versions of a node: apply `diff`.
 3. If the parser encounters a node type not in this rules file, the runtime emits a clear error and stops. Unknown node types are not silently ignored.
 
+---
+
+## Handshake nodes (added in rules/v4)
+
+These rules govern the session-security handshake introduced in `GIBBER-HANDSHAKE.md`. They apply to the four handshake node types (`§hello`, `§confirm`, `§sig`, `§reject`) and define how a runtime validates, processes, and enforces signed sessions.
+
+### `§hello`
+
+A handshake initiation or response. Carries the agent's identity, ephemeral public key, protocol version, and timestamp.
+
+| Context | Rule |
+|---------|------|
+| `validate` | Required fields: `§agent` (identifier), `§pubkey` (base64 string), `§version` (must be `gibber/4` or higher), `§ts` (Unix milliseconds, must be within 60 seconds of local clock). |
+| `walk` | Terminal — no children. |
+| `render-english` | `"Agent {§agent} initiates handshake with public key {§pubkey} at {§ts}."` |
+| `verify` | Check that `§version` is supported and `§ts` is fresh. Reject stale hellos. |
+
+### `§confirm`
+
+Handshake confirmation. Carries an HMAC proof that the sender derived the correct shared secret.
+
+| Context | Rule |
+|---------|------|
+| `validate` | Required fields: `§proof` (hex string, exactly 8 characters). |
+| `walk` | Terminal — no children. |
+| `render-english` | `"Agent confirms handshake with proof {§proof}."` |
+| `verify` | Compute `HMAC-SHA256(randomizer, "gibber/4:{sender}:{receiver}")`, truncate to 8 hex chars, compare to `§proof`. If mismatch: emit `§reject` and terminate session. |
+
+### `§sig`
+
+Signature prefix on every post-handshake form. Not a standalone node — it is a prefix attached to any other form.
+
+| Context | Rule |
+|---------|------|
+| `validate` | Value must be exactly 6 hex characters. The form following the `§sig:` prefix must itself be a valid Gibber form. |
+| `walk` | Walk the child form (everything after `§sig:XXXXXX `). |
+| `render-english` | `"[signed:{§sig}] "` prepended to the child form's English rendering. |
+| `verify` | Compute `HMAC-SHA256(randomizer, child_form_text \|\| message_counter)`, truncate to 6 hex chars. If mismatch: **discard the entire form before parsing**. Do not acknowledge. Do not respond. Increment the expected counter regardless to stay in sync. |
+| `diff` | The signature itself is not significant for diff (it changes every message). Diff the child form only. |
+
+### `§reject`
+
+Handshake rejection. Terminates the session immediately.
+
+| Context | Rule |
+|---------|------|
+| `validate` | Optional field: `§reason` (free text). |
+| `walk` | Terminal — no children. |
+| `render-english` | `"Handshake rejected. Reason: {§reason \|\| 'proof mismatch'}. Session terminated."` |
+| `verify` | On receiving `§reject`, the runtime must stop processing all further forms from this peer. No recovery — a new `§hello` exchange is required. |
+
+### Runtime enforcement rules
+
+These are not per-node rules but session-level constraints that the runtime must enforce once a handshake is established:
+
+1. **Pre-handshake tolerance.** Before any `§hello` is received, the runtime accepts unsigned forms (gibber/3 compatibility mode). A warning is emitted: `"unsigned session — forms are not authenticated"`.
+2. **Post-handshake lock.** After a successful `§hello` + `§confirm` exchange, the runtime **must reject all unsigned forms**. Any form without a valid `§sig:` prefix is discarded silently.
+3. **Counter monotonicity.** The message counter starts at 1 after the `§confirm` exchange. It increments by 1 for each form sent. The receiver tracks the expected counter and rejects forms with a counter mismatch (prevents replay).
+4. **Rekey.** A `§rekey` form (containing a new `§pubkey`) triggers a new key exchange mid-session without dropping to unsigned mode. The old randomizer remains active until the new `§confirm` exchange completes.
+5. **Timeout.** If no valid signed form is received within 300 seconds (configurable), the session expires. A new `§hello` exchange is required.
+
+---
+
 ## How to extend the rules
 
 Projects with domain-specific node types add their own rule entries in a file named `gibber-rules-<project>.md` in the project root, alongside the project's `gibber-dict-<project>.md`. The runtime loads both the base rules and the extension on startup.
@@ -371,4 +434,10 @@ When you add a new node type to a project:
 
 ## Versioning
 
-This file is `rules/v1`. The full Gibber version triple is in `GIBBER-VERSION` and is referenced from every project's `CLAUDE.md` Gibber Protocol block. Any change to this file that affects behavior must bump `rules/vN` and update `GIBBER-VERSION`. Backward-compatible additions (new optional contexts, new node types) keep the same version. Breaking changes (removed contexts, type changes) bump the version and require all consumers to re-read.
+This file is `rules/v4`. The full Gibber version string is `gibber/4 dict-meta/v2 rules/v4 tools/v1 handshake/v1` and is referenced from every project's `CLAUDE.md` Gibber Protocol block. Any change to this file that affects behavior must bump `rules/vN` and update `GIBBER-VERSION`. Backward-compatible additions (new optional contexts, new node types) keep the same version. Breaking changes (removed contexts, type changes) bump the version and require all consumers to re-read.
+
+### Changelog
+- `rules/v4`: Added handshake nodes (`§hello`, `§confirm`, `§sig`, `§reject`) and session enforcement rules.
+- `rules/v3`: Added tool output nodes (`§result`, `§diagnostic`, `§test`, `§commit`).
+- `rules/v2`: Added explanation and verification nodes (`§explanation`, `§verification`, `§claim`).
+- `rules/v1`: Initial release with core nodes (`§task`, `§index`, `§learning`, `§session`, `§memory`, `§budget`).
