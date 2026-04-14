@@ -1,0 +1,25 @@
+wing: gibber
+rooms:
+- name: scripts
+  description: Files from tools/
+  keywords:
+  - scripts
+  - tools
+- name: crates
+  description: Files from crates/
+  keywords:
+  - crates
+  - crates
+- name: playground
+  description: Files from playground/
+  keywords:
+  - playground
+  - playground
+- name: templates
+  description: Files from templates/
+  keywords:
+  - templates
+  - templates
+- name: general
+  description: Files that don't fit other rooms
+  keywords: []
