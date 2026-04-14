@@ -10,16 +10,16 @@ This project uses **Gibber**, a compact symbolic file format for AI agent projec
 
 ### Step 1 — FAST-PATH VERSION CHECK (do this before anything else)
 
-Current Gibber version for this project: **`gibber/3 dict-meta/v1 rules/v3 tools/v1`**
+Current Gibber version for this project: **`gibber/4 dict-meta/v2 rules/v4 tools/v1`**
 
 Before reading any teaching files, ask yourself honestly: **do you already know Gibber at exactly this version?**
 
 - **YES** (you have learned this version in a previous session, in earlier context, or in your durable memory): SKIP the teaching files (`GIBBER-SPEC.md`, `GIBBER-DICTIONARY.md`, `GIBBER-RULES.md`). Go straight to Step 3 (read the project extension) and start working.
 - **NO** or **UNSURE**: continue to Step 2.
 
-The version string is the source of truth. If your memory says you know `gibber/3 dict-meta/v1 rules/v3 tools/v1` and this CLAUDE.md says the same string, you are taught. If the strings differ in any character, fall through to Step 2.
+The version string is the source of truth. If your memory says you know `gibber/4 dict-meta/v2 rules/v4 tools/v1` and this CLAUDE.md says the same string, you are taught. If the strings differ in any character, fall through to Step 2.
 
-After learning Gibber at a given version, write a short note to your durable memory ("learned Gibber gibber/3 dict-meta/v1 rules/v3 tools/v1 on YYYY-MM-DD") so future sessions take the fast path.
+After learning Gibber at a given version, write a short note to your durable memory ("learned Gibber gibber/4 dict-meta/v2 rules/v4 tools/v1 on YYYY-MM-DD") so future sessions take the fast path.
 
 ### Step 2 — TEACHING (only if Step 1 said NO or UNSURE)
 
@@ -64,7 +64,7 @@ This project uses the **`.gibber` / `.human` two-file model**.
 1. **The `.gibber` file is the source of truth.** Edits go here. Always.
 2. **Never edit a `.human` file directly.** If a human asks to see a gibber file in English, generate the English by applying the matching `render-english` rule from `GIBBER-RULES.md`, then either print it to the conversation or write a `.human` companion file. The next time the `.gibber` file changes, the `.human` is stale until regenerated.
 3. **Use only defined symbols.** Every gibber symbol you write must be in the loaded dictionary (`meta/v1` plus this project's extension). If you need a symbol that isn't defined, add it to the project's extension first.
-4. **Frontmatter every `.gibber` file** with `id` and `gibber_dict` (no `format: dual` — that field is gone in `gibber/3`).
+4. **Frontmatter every `.gibber` file** with `id` and `gibber_dict` (no `format: dual` — that field is gone in `gibber/4`).
 5. **Apply the rules from `GIBBER-RULES.md`** when validating, walking, rendering, or diffing any AST node.
 6. **Tool output is gibber-only.** Wrappers like `gibber-run` always emit Gibber, never English. The English summary, if a human ever asks, comes from you on the spot during the conversation.
 

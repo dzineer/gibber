@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
   <title>The Gibber Specification</title>
-  <meta name="description" content="Version gibber/3 — the complete grammar, file model, and validation rules for the Gibber symbolic format."/>
+  <meta name="description" content="Version gibber/4 — the complete grammar, file model, and validation rules for the Gibber symbolic format."/>
 <style>
 .card {
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
@@ -47,7 +47,7 @@ footer a:hover { color: #22D3EE; transform: translateX(2px); }
 <header class="sticky top-0 z-40 border-b border-line/80 bg-bg-base/70 backdrop-blur-md">
 <div class="container-prose flex h-14 items-center justify-between gap-4">
 <a href="/gibber/" class="flex items-center gap-2 font-mono text-sm font-semibold text-ink-hi shrink-0">
-  <span class="inline-block h-2 w-2 rounded-full bg-accent" aria-hidden="true"></span>gibber<span class="font-normal text-ink-lo">/v3</span>
+  <span class="inline-block h-2 w-2 rounded-full bg-accent" aria-hidden="true"></span>gibber<span class="font-normal text-ink-lo">/v4</span>
 </a>
 <nav class="hidden items-center gap-1 text-xs text-ink-mid md:flex">
   <div class="relative group">
@@ -142,10 +142,10 @@ function gibberSearch(q){
   <div class="absolute inset-0 bg-grid mask-fade-b opacity-40"></div>
   <div class="container-prose relative pb-24 pt-20 md:pb-32 md:pt-28">
     <div class="chip mb-6">
-      <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>gibber/3 &mdash; complete reference
+      <span class="h-1.5 w-1.5 rounded-full bg-accent"></span>gibber/4 &mdash; complete reference
     </div>
     <h1 class="h-display max-w-4xl">The Gibber <span class="text-accent">Specification.</span></h1>
-    <p class="mt-6 lede">Version gibber/3 &mdash; the complete grammar, file model, and validation rules for the Gibber symbolic format.</p>
+    <p class="mt-6 lede">Version gibber/4 &mdash; the complete grammar, file model, and validation rules for the Gibber symbolic format.</p>
   </div>
 </section>
 
@@ -235,7 +235,7 @@ gibber_dict: meta/v1, eidetic_memory
     <!-- Compatibility note -->
     <div class="card p-6 bg-accent/[0.04] border-accent/30">
       <p class="text-sm text-ink-mid leading-relaxed">
-        <strong class="text-ink-hi">Compatibility note:</strong> Earlier versions of Gibber used a single Markdown file with <code class="font-mono">## gibber</code> and <code class="font-mono">## human</code> headings. That model is <strong class="text-ink-hi">deprecated</strong> as of gibber/3. The two-file <code class="font-mono">.gibber</code> / <code class="font-mono">.human</code> model replaces it. Conversion is mechanical: keep the gibber section, drop the human section, rename from <code class="font-mono">.md</code> to <code class="font-mono">.gibber</code>, and remove the <code class="font-mono">format: dual</code> frontmatter line.
+        <strong class="text-ink-hi">Compatibility note:</strong> Earlier versions of Gibber used a single Markdown file with <code class="font-mono">## gibber</code> and <code class="font-mono">## human</code> headings. That model is <strong class="text-ink-hi">deprecated</strong> as of gibber/4. The two-file <code class="font-mono">.gibber</code> / <code class="font-mono">.human</code> model replaces it. Conversion is mechanical: keep the gibber section, drop the human section, rename from <code class="font-mono">.md</code> to <code class="font-mono">.gibber</code>, and remove the <code class="font-mono">format: dual</code> frontmatter line.
       </p>
     </div>
   </div>
@@ -627,7 +627,7 @@ gibber_dict: meta/v1, eidetic_memory
 <!-- footer -->
 <footer class="border-t border-line py-14">
   <div class="container-prose flex flex-col gap-4 sm:flex-row sm:items-center justify-between text-xs text-ink-lo">
-    <span class="font-mono">gibber/3 &mdash; specification</span>
+    <span class="font-mono">gibber/4 &mdash; specification</span>
     <span>The complete grammar, file model, and validation rules.</span>
     <a href="/gibber/" class="transition-colors duration-200 hover:text-ink-hi">Back to gibber home</a>
   </div>

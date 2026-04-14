@@ -73,10 +73,10 @@ Where:
 ### Example
 
 ```
-;; Unsigned (gibber/3):
+;; Unsigned (gibber/3 — no handshake):
 (§task §id:T042 §status:§wip §owner:§ai)
 
-;; Signed (gibber/4):
+;; Signed (gibber/4 — with handshake):
 §sig:a3f2c1 (§task §id:T042 §status:§wip §owner:§ai)
 ```
 

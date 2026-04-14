@@ -2,7 +2,7 @@
 
 Gibber is a compact symbolic file format for AI agent project files. It is designed to be **read by AI agents, not by humans**. Files written in Gibber use a small S-expression-style notation that is several times denser than the equivalent English, lets long agent sessions hold dramatically more historical context, and is fully self-describing through a versioned dictionary.
 
-Current version: **`gibber/3 dict-meta/v1 rules/v3 tools/v1`**
+Current version: **`gibber/4 dict-meta/v2 rules/v4 tools/v1`**
 
 ## Why Gibber exists
 

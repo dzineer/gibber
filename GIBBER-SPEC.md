@@ -1,6 +1,6 @@
 # Gibber Specification
 
-Version: `gibber/3`
+Version: `gibber/4`
 
 Gibber is a compact symbolic file format for AI agent project files. Files written in Gibber are designed to be read **by AI agents**, not by humans. The grammar is a small S-expression-style notation that uses far fewer tokens than the equivalent English, lets agents hold longer context histories before compaction, and is fully self-describing through a versioned dictionary.
 
@@ -54,7 +54,7 @@ Rules for `.human` files:
 
 ### Compatibility with the older dual-language format
 
-Earlier versions of Gibber used a single Markdown file with `## gibber` and `## human` headings. That model is **deprecated** as of `gibber/3`. The two-file `.gibber` / `.human` model replaces it. Conversion is mechanical: keep the gibber section, drop the human section, rename the file from `.md` to `.gibber`, and remove the `format: dual` frontmatter line.
+Earlier versions of Gibber used a single Markdown file with `## gibber` and `## human` headings. That model is **deprecated** as of `gibber/4`. The two-file `.gibber` / `.human` model replaces it. Conversion is mechanical: keep the gibber section, drop the human section, rename the file from `.md` to `.gibber`, and remove the `format: dual` frontmatter line.
 
 ## Gibber-speak grammar
 
